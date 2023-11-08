@@ -1,0 +1,32 @@
+.titolo{
+    color: rgb(0, 0, 0);
+    font-family: 'Dancing Script', cursive;
+    font-family: 'Lobster', cursive;
+    font-size: 60px;
+    margin-top: 40px;
+}
+
+.chi-sono {
+    height: 100%;
+    background: linear-gradient(184deg, rgba(25,22,12,0.8741667076987045) 46%, rgba(163,164,164,1) 83%);
+    margin-top: 5%;
+    border-radius: 50px;
+}
+
+.chi-sono-image{
+   max-width: 100%;
+   width: auto;
+   max-height: 100%;
+   position: relative;
+   border-radius: 35px;
+   top: auto;
+   left: auto;
+}
+
+.chi-sono-p{
+    color: white;
+    font-size: 20px;
+    max-width: 100%;
+    width: auto;
+    position: relative;
+}

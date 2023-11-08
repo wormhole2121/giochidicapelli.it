@@ -1,0 +1,32 @@
+#carouselExampleControls{
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+.carousel-item {
+    height: 90vh; 
+    background-size: cover;
+    background-position: center;
+    top: 0;
+    
+    
+}
+
+.carousel-item:nth-child(1) {
+    background-image: url('/public/media/macchinetta.jpg');
+}
+
+.carousel-item:nth-child(2) {
+    background-image: url('/public/media/negozio.jpg');
+}
+
+.carousel-item:nth-child(3) {
+    background-image: url('/public/media/taglio.jpg');
+}
+
+
+@media (min-width: 1600px) { /* Ad esempio, per schermi con larghezza superiore a 1200px */
+    #carouselExampleControls img {
+        /* Qui puoi adattare le proprietà CSS come desideri per grandi schermi */
+        max-height: 1000px; /* Questo è solo un esempio. Adatta il valore in base alle tue esigenze */
+        width: auto;
+    }
+}

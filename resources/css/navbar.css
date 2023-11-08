@@ -1,0 +1,33 @@
+#navbar {
+    background-color: rgba(0, 0 ,0, 0.9) !important;
+}
+
+.nav-link{
+    color: white;
+}
+
+#navbar .nav-link:hover,
+#navbar .nav-link:active,
+#navbar .nav-link:focus {
+    color: white !important;
+    opacity: 1 !important;
+}
+
+@media (max-width: 1008px) {
+    #navbar .nav-link, 
+    #navbar .nav-link:active, 
+    #navbar .nav-link:hover,
+    #navbar .nav-link:focus {
+        color: black !important;
+    }
+}
+
+.custom-title {
+    text-align: center;
+    color: white;
+    margin-left: 40px;
+    font-family: 'Dancing Script', cursive;
+    font-family: 'Lobster', cursive;
+    font-size: 30px;
+}
+

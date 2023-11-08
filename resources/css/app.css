@@ -1,0 +1,9 @@
+@import 'bootstrap/dist/css/bootstrap';
+@import "./style.css";
+@import "./formLogin.css";
+@import "./navbar.css";
+@import "./cards.css";
+@import "./chiSono.css";
+@import "./carousel.css";
+@import './calendario.css';
+@import "./galleria.css";

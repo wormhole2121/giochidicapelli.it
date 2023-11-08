@@ -1,0 +1,180 @@
+/* login e register */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* margin-top: -50px; */
+}
+
+.login-inner-container {
+    width: 90%;
+    max-width: 550px;
+    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    padding: 50px 60px;
+    border-radius: 20px;
+    border: 3px solid #5B5348; /* Bordo grigio-beige */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.login-input {
+    padding: 15px 25px;
+    border: 1px solid #5B5348; /* Bordo grigio-beige */
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: #ffffff; /* Grigio tendente al beige */
+    color: #2E2E2E;
+    transition: all 0.3s, transform 0.2s; /* Aggiunto effetto di transizione per il transform */
+}
+
+/* Effetto di ingrandimento all'hover */
+.login-input:hover {
+    transform: scale(1.03); /* Ingrandisce l'input del 3% */
+}
+
+.login-input:focus {
+    border-color: #3E3A32; /* Enfasi beige al focus */
+    box-shadow: 0 0 10px rgba(62, 58, 50, 0.3), 0 5px 5px rgba(62, 58, 50, 0.2); /* Aggiunto effetto di "elevazione" */
+    background-color: #f5f3ef; /* Cambio di colore al focus */
+    outline: none;
+    transform: scale(1.05); /* Ingrandisce l'input del 5% al focus */
+}
+
+
+.forgot-password-link {
+    color: #5B5348;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.forgot-password-link:hover {
+    color: #3E3A32;
+}
+
+.login-submit-btn {
+    background: #525252; /* Grigio scuro */
+    border: 1px solid #53493F;
+    padding: 15px 0;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    border-radius: 10px;
+    color: #F3F3F3; /* Testo bianco per una migliore leggibilità */
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.login-submit-btn:hover {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); /* Ombra sotto il bottone */
+    transform: translateY(-2px); /* Solleva leggermente il bottone */
+    background-color: var(--accent-color);
+    color: black;
+}
+
+.login-error-text {
+    color: #9D2929;
+    font-size: 15px;
+}
+
+.forgot-password-link {
+    color: #5B5348;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;  /* Rendiamo il link un blocco inline per poter manipolare meglio l'elemento before */
+    overflow: hidden;  /* Nasconde il pseudo-elemento in eccesso */
+}
+
+.forgot-password-link::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;  /* Inizia dall'inizio del link */
+    width: 0%;  /* Inizialmente, la sottolineatura è nascosta */
+    height: 2px;
+    background: #5B5348;  /* Colore della sottolineatura */
+    transition: all 0.3s;  /* Durata dell'animazione */
+}
+
+.forgot-password-link:hover::before {
+    width: 37%;  /* Al passaggio del mouse, espandiamo la sottolineatura fino al 100% della larghezza del link */
+}
+
+/* forgot-password e reset-password */
+
+.reset-password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 50px); /* Riduce l'altezza totale del container */
+    margin-top: -50px; /* Margine negativo per spostare il container più in alto */
+}
+
+.reset-password-inner-container {
+    width: 90%;
+    max-width: 550px;
+    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    padding: 50px 60px;
+    border-radius: 20px;
+    border: 3px solid #5B5348; /* Bordo grigio-beige */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+
+.reset-password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.reset-password-input {
+    padding: 14px 25px;
+    border: 1px solid #5B5348; /* Bordo grigio-beige */
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: white; /* Grigio tendente al beige */
+    color: #2E2E2E;
+    transition: all 0.3s, transform 0.2s; /* Aggiunto effetto di transizione per il transform */
+}
+
+.reset-password-input:hover {
+    transform: scale(1.03); /* Ingrandisce l'input del 3% */
+}
+
+.reset-password-input:focus {
+    border-color: #3E3A32; /* Enfasi beige al focus */
+    box-shadow: 0 0 10px rgba(62, 58, 50, 0.3), 0 5px 5px rgba(62, 58, 50, 0.2); /* Aggiunto effetto di "elevazione" */
+    outline: none;
+    transform: scale(1.05); /* Ingrandisce l'input del 5% al focus */
+}
+
+.reset-password-label {
+    font-size: 18px;
+    color: #2E2E2E;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.reset-password-submit-btn {
+    background: var(--dark-shade);
+    border: 1px solid #53493F;
+    padding: 15px ;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    border-radius: 10px;
+    color: #F3F3F3; /* Testo bianco per una migliore leggibilità */
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.reset-password-submit-btn:hover {
+    background-color: var(--accent-color);
+    color: black;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); /* Ombra sotto il bottone */
+    transform: translateY(-2px); /* Solleva leggermente il bottone */
+}
