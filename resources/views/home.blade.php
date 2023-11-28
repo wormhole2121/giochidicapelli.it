@@ -2,5 +2,4 @@
     <x-carousel></x-carousel>
     <x-chiSono></x-chiSono>
     <x-galleria></x-galleria>
-    <!-- PORCO DEDIOOOO -->
 </x-layout>
