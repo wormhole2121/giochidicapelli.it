@@ -58,9 +58,6 @@
         <img src="media/immagine1.jpg" />
       </div>
       <div class="swiper-slide">
-        <img src="media/immagine2.jpg" />
-      </div>
-      <div class="swiper-slide">
         <img src="media/immagine3.jpg" />
       </div>
       <div class="swiper-slide">

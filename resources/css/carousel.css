@@ -25,8 +25,8 @@
 
 @media (min-width: 1600px) { /* Ad esempio, per schermi con larghezza superiore a 1200px */
     #carouselExampleControls img {
-        /* Qui puoi adattare le proprietà CSS come desideri per grandi schermi */
         max-height: 1000px; /* Questo è solo un esempio. Adatta il valore in base alle tue esigenze */
         width: auto;
     }
 }
+

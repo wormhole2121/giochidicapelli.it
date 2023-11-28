@@ -16,7 +16,18 @@ class BookingController extends Controller
     
         // Recupera la data selezionata dalla richiesta
         $selectedDate = $request->input('date');
+        
     
+        if (Auth::check() && Auth::user()->is_admin) {
+            // L'amministratore può vedere tutte le prenotazioni
+            $bookings = Booking::all();
+        } else {
+            // Gli utenti normali vedono solo le loro prenotazioni
+            $bookings = Booking::where('user_id', Auth::id())->get();
+        }
+    
+        // return view('booking.index', compact('bookings'));
+
         // Recupera tutte le prenotazioni per la data selezionata
         $bookings = Booking::where('date', $selectedDate)->get();
     
@@ -70,6 +81,8 @@ class BookingController extends Controller
         $isDateBooked = $bookings->where('date', $selectedDate)->count() > 0;
     
         return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableHours'));
+        
+        
     }
     
 
@@ -88,13 +101,16 @@ class BookingController extends Controller
         ]);
        
 
-        // Verifica se l'utente ha già una prenotazione per la data selezionata
-        $existingBooking = Booking::where('user_id', Auth::id())
-        ->where('date', $validatedData['date'])
-        ->first();
+        // Per gli amministratori, salta il controllo della prenotazione singola per giorno
+        if (!Auth::user()->is_admin) {
+            // Verifica se l'utente ha già una prenotazione per la data selezionata
+            $existingBooking = Booking::where('user_id', Auth::id())
+                ->where('date', $validatedData['date'])
+                ->first();
 
-        if ($existingBooking) {
-            return redirect()->route('calendario')->with('error', 'Hai già una prenotazione per questa data.');
+            if ($existingBooking) {
+                return redirect()->route('calendario')->with('error', 'Hai già una prenotazione per questa data.');
+            }
         }
 
         // Verifica sovrapposizioni con altre prenotazioni
@@ -189,9 +205,14 @@ class BookingController extends Controller
         }
     
         // Verifica se l'utente autenticato è autorizzato a eliminare l'appuntamento
-        if (Auth::check() && $booking->user_id == Auth::id()) {
+        // if (Auth::check() && $booking->user_id == Auth::id()) {
+        //     $booking->delete();
+        //     return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
+        // }
+
+        if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id())) {
             $booking->delete();
-            return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
+            return redirect()->route('le-mie-prenotazioni')->with('success', 'Appuntamento eliminato con successo.');
         }
     
         return redirect()->route('le-mie-prenotazioni')->with('error', 'Non hai l\'autorizzazione per eliminare questo appuntamento.');   

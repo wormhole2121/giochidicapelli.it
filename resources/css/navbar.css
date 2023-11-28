@@ -13,7 +13,7 @@
     opacity: 1 !important;
 }
 
-@media (max-width: 1008px) {
+@media (max-width: 900px) {
     #navbar .nav-link, 
     #navbar .nav-link:active, 
     #navbar .nav-link:hover,
