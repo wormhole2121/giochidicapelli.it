@@ -8,16 +8,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
-{   
+{
     public function index(Request $request)
     {
         // Imposta la lingua di Carbon in italiano
         Carbon::setLocale('it');
-    
+
         // Recupera la data selezionata dalla richiesta
         $selectedDate = $request->input('date');
-        
-    
+
+
         if (Auth::check() && Auth::user()->is_admin) {
             // L'amministratore può vedere tutte le prenotazioni
             $bookings = Booking::all();
@@ -25,33 +25,33 @@ class BookingController extends Controller
             // Gli utenti normali vedono solo le loro prenotazioni
             $bookings = Booking::where('user_id', Auth::id())->get();
         }
-    
+
         // return view('booking.index', compact('bookings'));
 
         // Recupera tutte le prenotazioni per la data selezionata
         $bookings = Booking::where('date', $selectedDate)->get();
-    
+
         // Recupera tutte le date già prenotate
         $bookedDates = Booking::where('date', '>=', now())
             ->where('end_time', '>=', now())
             ->pluck('date')
             ->unique();
-    
+
         // Recupera tutte le date disponibili
         $availableDates = [];
         $startDate = Carbon::createFromFormat('Y-m-d', now()->format('Y-m-d'));
         $endDate = Carbon::createFromFormat('Y-m-d', now()->addDays(14)->format('Y-m-d'));
-    
+
         while ($startDate <= $endDate) {
             $date = $startDate->format('Y-m-d');
             $availableDates[] = $date;
             $startDate->addDay();
         }
-    
+
         // Definisci gli orari di lavoro
         $dayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
         $timeslots = [];
-    
+
         if ($dayOfWeek == 4) { // Giovedì
             $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
         } elseif (in_array($dayOfWeek, [2, 3, 5, 6])) { // Martedì, Mercoledì, Venerdì, Sabato
@@ -59,17 +59,17 @@ class BookingController extends Controller
             $afternoon = range(14 * 60, 19.4 * 60 - 25, 25);
             $timeslots = array_merge($morning, $afternoon);
         }
-    
+
         // Converti i minuti in orari
         $availableTimes = collect($timeslots)->map(function ($minutes) {
             $hours = floor($minutes / 60);
             $mins = $minutes % 60;
             return sprintf('%02d:%02d', $hours, $mins);
         });
-    
+
         $bookedHours = $bookings->where('date', $selectedDate)->pluck('start_time')->all();
         $availableHours = array_diff($availableTimes->toArray(), $bookedHours);
-    
+
         // Verifica se l'utente autenticato ha già prenotato per la data selezionata
         $userBookings = [];
         if (Auth::check()) {
@@ -77,14 +77,12 @@ class BookingController extends Controller
                 ->where('date', $selectedDate)
                 ->get();
         }
-    
+
         $isDateBooked = $bookings->where('date', $selectedDate)->count() > 0;
-    
+
         return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableHours'));
-        
-        
     }
-    
+
 
     public function prenota(Request $request)
     {
@@ -97,9 +95,9 @@ class BookingController extends Controller
             'name' => 'required|string|max:255',
             'haircut_types' => 'required|array',
             'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor,Sfumatura,Taglio Children,Modellatura barba',
-            
+
         ]);
-       
+
 
         // Per gli amministratori, salta il controllo della prenotazione singola per giorno
         if (!Auth::user()->is_admin) {
@@ -137,7 +135,7 @@ class BookingController extends Controller
             'afternoon' => ['14:00', '19:15'],
             'thursday' => ['14:00', '21:00']
         ];
-        
+
         $isThursday = $dayOfWeek == 4;
 
         // Se è giovedì, controlla solo l'intervallo del giovedì
@@ -149,16 +147,18 @@ class BookingController extends Controller
             }
         } else {
             $validDayOfWeeks = [2, 3, 4, 5, 6]; // Dal martedì al sabato
-    
+
             $validStartMorning = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validTimeRanges['morning'][0]);
             $validEndMorning = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validTimeRanges['morning'][1]);
-    
+
             $validStartAfternoon = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validTimeRanges['afternoon'][0]);
             $validEndAfternoon = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validTimeRanges['afternoon'][1]);
-    
-            if (!in_array($dayOfWeek, $validDayOfWeeks) || 
-                (!$startTime->between($validStartMorning, $validEndMorning) && 
-                 !$startTime->between($validStartAfternoon, $validEndAfternoon))) {
+
+            if (
+                !in_array($dayOfWeek, $validDayOfWeeks) ||
+                (!$startTime->between($validStartMorning, $validEndMorning) &&
+                    !$startTime->between($validStartAfternoon, $validEndAfternoon))
+            ) {
                 return redirect()->route('calendario')->with('error', 'Gli orari di prenotazione validi sono dalle 08:30 alle 12:00 e dalle 14:00 alle 19:15.');
             }
         }
@@ -175,7 +175,7 @@ class BookingController extends Controller
         ]);
 
         // Aggiungi queste righe per settare il campo haircut_types
-        $haircutTypes = $request->input('haircut_types'); 
+        $haircutTypes = $request->input('haircut_types');
         $booking->haircut_types = json_encode($haircutTypes);
 
 
@@ -203,7 +203,7 @@ class BookingController extends Controller
         if (!$booking) {
             return redirect()->route('le-mie-prenotazioni')->with('error', 'Appuntamento non trovato.');
         }
-    
+
         // Verifica se l'utente autenticato è autorizzato a eliminare l'appuntamento
         // if (Auth::check() && $booking->user_id == Auth::id()) {
         //     $booking->delete();
@@ -214,11 +214,11 @@ class BookingController extends Controller
             $booking->delete();
             return redirect()->route('le-mie-prenotazioni')->with('success', 'Appuntamento eliminato con successo.');
         }
-    
-        return redirect()->route('le-mie-prenotazioni')->with('error', 'Non hai l\'autorizzazione per eliminare questo appuntamento.');   
-        
+
+        return redirect()->route('le-mie-prenotazioni')->with('error', 'Non hai l\'autorizzazione per eliminare questo appuntamento.');
+
     }
-    
-    
-    
+
+
+
 }

@@ -76,11 +76,24 @@ function generateDays() {
                 const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
                 updateDateDropdown(selectedDate);
                 document.querySelector('.btn-show-bookings').click();
+
+                // Rimuovi la classe 'active' da tutte le date
+                datesContainer.querySelectorAll('.date').forEach((d) => {
+                    d.classList.remove('active');
+                });
+
+                // Aggiungi la classe 'active' solo alla data selezionata
+                dateElement.classList.add('active');
             });
         }
 
-        if (currentYear === new Date().getFullYear() && currentMonth === new Date().getMonth() && i === new Date().getDate()) {
-            spanElement.classList.add("today");
+        // Verifica se la data è quella selezionata e aggiungi la classe 'active'
+        if (
+            currentYear === new Date().getFullYear() &&
+            currentMonth === new Date().getMonth() &&
+            i === new Date().getDate()
+        ) {
+            dateElement.classList.add("active");
         }
 
         dateElement.appendChild(spanElement);
@@ -101,7 +114,6 @@ function generateDays() {
         datesContainer.appendChild(nextDateElement);
     }
 }
-
 
 function deselectAllDays() {
     document.querySelectorAll(".calendar .date.selected").forEach(el => {
@@ -140,7 +152,6 @@ $(document).ready(function() {
     });
 });
 
-
 document.addEventListener('DOMContentLoaded', function() {
     let timeButtons = document.querySelectorAll('.time-btn');
     let selectedTimeInput = document.getElementById('selectedTime');
@@ -164,11 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Controlla se c'è un orario già selezionato e seleziona il bottone corrispondente
     if (selectedTimeInput.value) {
-        let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
+        let selectedButton = document.querySelector('.time-btn[data-time="${selectedTimeInput.value}"]');
         if (selectedButton) {
             selectedButton.click(); // Simula un clic sul bottone per selezionarlo
         }
     }
 });
-
-

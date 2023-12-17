@@ -23,6 +23,19 @@
 }
 
 
+/* .carousel-item video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    background-size: cover;
+    overflow: hidden;
+} */
+
 @media (min-width: 1600px) { /* Ad esempio, per schermi con larghezza superiore a 1200px */
     #carouselExampleControls img {
         max-height: 1000px; /* Questo è solo un esempio. Adatta il valore in base alle tue esigenze */

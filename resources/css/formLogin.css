@@ -1,3 +1,15 @@
+.login-title{
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.register-title{
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+}
+
 /* login e register */
 .login-container {
     display: flex;
@@ -32,6 +44,52 @@
     color: #2E2E2E;
     transition: all 0.3s, transform 0.2s; /* Aggiunto effetto di transizione per il transform */
 }
+
+/* Contenitore principale per i campi di input */
+.inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Due colonne */
+    gap: 20px; /* Spazio tra le colonne */
+}
+
+/* Classe per ogni campo di input e i suoi messaggi di errore */
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stile per gli input e i messaggi di errore */
+.input-wrapper .login-input,
+.input-wrapper .login-error-text {
+    margin-bottom: 10px; /* Spazio tra gli input e i messaggi di errore */
+}
+
+/* Stile per il pulsante di invio */
+.login-submit-btn {
+    grid-column: 1 / -1; /* Fa sì che il bottone si estenda su entrambe le colonne */
+    margin-top: 20px; /* Spazio sopra il pulsante */
+}
+
+/* Stile per centrare il form di registrazione */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Assicura che il contenitore occupi l'intera altezza della viewport */
+}
+
+.register-inner-container {
+    width: 90%;
+    max-width: 800px;
+    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    padding: 50px 60px;
+    border-radius: 20px;
+    border: 3px solid #5B5348; /* Bordo grigio-beige */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Le regole esistenti per .inputs-grid, .input-wrapper, etc., rimangono invariate */
+
 
 /* Effetto di ingrandimento all'hover */
 .login-input:hover {

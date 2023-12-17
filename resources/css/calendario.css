@@ -158,7 +158,7 @@
 
 /* Date fuori dal mese corrente */
 .out-of-month {
-    opacity: 0.5; /* Rende le date semitrasparenti */
+    opacity: 0.4; /* Rende le date semitrasparenti */
     cursor: default; /* Indica che non sono selezionabili */
     
 }
@@ -185,7 +185,7 @@
 
 
 /* Utilizza media queries per dispositivi con schermi piccoli */
-@media (max-width: 768px) { /* Adatta questo valore in base alle tue esigenze */
+@media (max-width: 900px) { /* Adatta questo valore in base alle tue esigenze */
     .datepicker-section .days, .dates {
         gap: 8px; /* Riduci lo spazio tra le celle */
     }

@@ -4,6 +4,9 @@
 
 .nav-link{
     color: white;
+    font-size: 35px;
+    font-family: 'Dancing Script', cursive;
+    font-family: 'Lobster', cursive;
 }
 
 #navbar .nav-link:hover,

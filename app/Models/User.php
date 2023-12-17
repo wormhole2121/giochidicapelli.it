@@ -12,7 +12,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,CanResetPassword;
+    use HasApiTokens, HasFactory, Notifiable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'password',
         'phone',
