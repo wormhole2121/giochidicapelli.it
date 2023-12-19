@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// rotta json
+Route::get('/manifest.json', function () {
+     return response()->file(public_path('manifest.json'));
+});
+
+
+
 Route::get('/', [HomeController::class, 'homepage'])->name('home');
 // rotte per il calendario
 Route::get('/calendario', [BookingController::class, 'index'])->name('calendario');
@@ -41,17 +48,3 @@ Route::get('/password/reset/{token}', [PasswordResetController::class, 'showRese
 
 Route::post('/password/reset', [PasswordResetController::class, 'resetPassword'])
      ->middleware('guest')->name('password.update');
-
-
-// rotte admin
-// Route::middleware(['auth', 'admin'])->group(function () {
-//     Route::get('/admin/bookings', [AdminBookingController::class, 'adminIndex'])->name('admin.bookings.index');
-//     Route::get('/admin/bookings/create', [AdminBookingController::class, 'adminCreate'])->name('admin.bookings.create');
-//     Route::post('/admin/bookings', [AdminBookingController::class, 'adminStore'])->name('admin.bookings.store');
-//     Route::get('/admin/bookings/{id}/edit', [AdminBookingController::class, 'adminEdit'])->name('admin.bookings.edit');
-//     Route::put('/admin/bookings/{id}', [AdminBookingController::class, 'adminUpdate'])->name('admin.bookings.update');
-//     Route::delete('/admin/bookings/{id}', [AdminBookingController::class, 'adminDestroy'])->name('admin.bookings.destroy');
-// });
-
-
-

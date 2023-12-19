@@ -94,7 +94,7 @@ class BookingController extends Controller
             'phone' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'haircut_types' => 'required|array',
-            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor,Sfumatura,Taglio Children,Modellatura barba',
+            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade,Taglio shampoo e modellatura,Taglio Children,Modellatura barba',
 
         ]);
 

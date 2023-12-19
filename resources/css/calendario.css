@@ -27,23 +27,28 @@
     max-width: 1100px;
     border-radius: var(--border-radius);
     padding: 35px;
-    background: white;
+    background: linear-gradient(184deg, rgba(25,22,12,0.8741667076987045) 46%, rgba(163,164,164,1) 83%);
     box-shadow: 0 12px 18px rgba(0, 0, 0, 0.08);
     animation: fadeIn 0.4s ease;
 }
 
 .booking-header {
-    color: var(--dark-shade);
+    /* color: var(--dark-shade); */
+    color: white;
     font-size: 28px;
     letter-spacing: 1.5px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: 25px;
     text-align: center;
+    font-size: 40px;
+    font-family: 'Fjalla One', sans-serif;
+    font-weight: 600;
+    
 }
 
 /* Calendario */
 .calendar-wrapper {
-    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    /* background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%); */
     border: none;
     border-radius: var(--border-radius);
     padding: 24px;
@@ -57,11 +62,14 @@
     align-items: center;
     padding: 16px 22px;
     background-color: rgba(0, 0, 0, 0.05); /* Un leggero sfondo scuro per contrasto */
-    color: var(--dark-shade);
+    color: white;
     font-weight: 600;
     border-radius: var(--border-radius);
     transition: all var(--transition-time) ease;
+    font-family: 'Fjalla One', sans-serif;
 }
+
+
 
 .month-selector:hover {
     background-color: rgba(0, 0, 0, 0.1);
@@ -76,7 +84,7 @@
 .datepicker-section .day, .date {
     text-align: center;
     padding: 14px 0;
-    color: var(--dark-shade);
+    color: white;
     font-weight: 600;
     border-radius: var(--border-radius);
     transition: background var(--transition-time) ease, transform var(--transition-time) ease;
@@ -107,7 +115,7 @@
 }
 
 .reservation-section .form-control {
-    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    background: white;
     border: 2px solid var(--light-shade);
     border-radius: var(--border-radius);
     padding: 10px 15px;
@@ -134,6 +142,10 @@
 .reservation-section .btn:hover, .btn-show-bookings:hover {
     background-color: var(--accent-color);
     color: black;
+}
+
+.reservation-body{
+    background: linear-gradient(0deg, rgba(25,22,12,0.8631827731092436) 19%, rgba(163,164,164,0.835171568627451) 54%);
 }
 
 .btn-show-bookings {

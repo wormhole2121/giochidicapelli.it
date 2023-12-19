@@ -5,9 +5,9 @@
 .nav-link{
     color: white;
     font-size: 35px;
-    font-family: 'Dancing Script', cursive;
-    font-family: 'Lobster', cursive;
-}
+    font-family: 'Fjalla One', sans-serif;
+} 
+
 
 #navbar .nav-link:hover,
 #navbar .nav-link:active,
@@ -29,8 +29,7 @@
     text-align: center;
     color: white;
     margin-left: 40px;
-    font-family: 'Dancing Script', cursive;
-    font-family: 'Lobster', cursive;
+    font-family: 'Fjalla One', sans-serif;
     font-size: 30px;
 }
 

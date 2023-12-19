@@ -10,36 +10,14 @@
     
 }
 
-.carousel-item:nth-child(1) {
-    background-image: url('/public/media/macchinetta.jpg');
+.carousel-item video {
+    width: 100%; /* Imposta la larghezza al 100% del contenitore */
+    height: auto; /* Mantiene il rapporto aspetto originale */
 }
 
-.carousel-item:nth-child(2) {
-    background-image: url('/public/media/negozio.jpg');
-}
-
-.carousel-item:nth-child(3) {
-    background-image: url('/public/media/taglio.jpg');
-}
-
-
-/* .carousel-item video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-    background-size: cover;
-    overflow: hidden;
-} */
-
-@media (min-width: 1600px) { /* Ad esempio, per schermi con larghezza superiore a 1200px */
-    #carouselExampleControls img {
-        max-height: 1000px; /* Questo è solo un esempio. Adatta il valore in base alle tue esigenze */
-        width: auto;
+/* Media query per dispositivi medi e piccoli */
+@media (max-width: 1000px) {
+    .carousel-item {
+        height: 29vh;
     }
 }
-

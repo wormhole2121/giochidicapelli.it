@@ -75,8 +75,9 @@
                 <!-- Modulo di Prenotazione -->
                 <div class="col-md-6 col-sm-12 reservation-section">
                     <div class="card reservation-card">
-                        <h3 class="card-header reservation-header">Prenota un Appuntamento</h3>
+                        
                         <div class="card-body reservation-body">
+                            <h3 class="card-header reservation-header text-center">Prenota un Appuntamento</h3>
                             <form action="{{ route('prenota') }}" class="reservation-form" method="POST">
                                 @csrf
                                 <input type="hidden" name="date" value="{{ $selectedDate }}">
@@ -89,13 +90,14 @@
                                     <input type="text" name="phone" id="phone" class="form-control" required>
                                 </div>
                                 <div class="form-group">
+                                    <p>*Ogni taglio comprende lo shampoo*</p>
                                     <label for="haircut_types">Tipologia di Tagli:</label>
                                     <select multiple name="haircut_types[]" id="haircut_types" class="form-control" multiple
                                         required>
                                         <option value="Taglio">Taglio</option>
                                         <option value="Taglio con modellatura barba">Taglio con modellatura barba</option>
-                                        <option value="Taglio Razor">Taglio Razor</option>
-                                        <option value="Sfumatura">Sfumatura</option>
+                                        <option value="Taglio Razor fade">Taglio Razor fade</option>
+                                        <option value="Taglio shampoo e modellatura">Taglio shampoo e modellatura</option>
                                         <option value="Taglio Children">Taglio Children</option>
                                         <option value="Modellatura barba">Modellatura barba</option>
                                     </select>
