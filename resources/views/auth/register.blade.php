@@ -33,7 +33,7 @@
                             <p class="login-error-text">{{ $message }}</p>
                         @enderror
                     </div>
-
+                    {{-- ciao --}}
                     <div class="input-wrapper">
                         <input class="login-input" type="password" name="password" placeholder="Password" required>
                         @error('password')
