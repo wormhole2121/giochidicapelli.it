@@ -2,12 +2,15 @@
     font-size: 35px;
     font-weight: bold;
     text-align: center;
+    color: white;
 }
 
 .register-title{
     font-size: 35px;
     font-weight: bold;
     text-align: center;
+    color: white;
+    margin-top: 10%;
 }
 
 /* login e register */
@@ -15,7 +18,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    margin-top: 8%;
+    /* height: 100vh; */
     /* margin-top: -50px; */
 }
 
@@ -75,11 +79,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Assicura che il contenitore occupi l'intera altezza della viewport */
+    margin-top: 8%;
+    /* min-height: 100vh;  */
 }
 
 .register-inner-container {
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     background: linear-gradient(184deg, rgba(25,22,12,0.8741667076987045) 46%, rgba(163,164,164,1) 83%);
     padding: 50px 60px;
@@ -104,15 +109,8 @@
     transform: scale(1.05); /* Ingrandisce l'input del 5% al focus */
 }
 
-
-.forgot-password-link {
-    color: #5B5348;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.forgot-password-link:hover {
-    color: #3E3A32;
+a.forgot-password-link{
+    color: white;
 }
 
 .login-submit-btn {
@@ -155,7 +153,7 @@
     left: 0;  /* Inizia dall'inizio del link */
     width: 0%;  /* Inizialmente, la sottolineatura è nascosta */
     height: 2px;
-    background: #5B5348;  /* Colore della sottolineatura */
+    background: black;  /* Colore della sottolineatura */
     transition: all 0.3s;  /* Durata dell'animazione */
 }
 
@@ -176,7 +174,7 @@
 .reset-password-inner-container {
     width: 90%;
     max-width: 550px;
-    background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%);
+    background: linear-gradient(184deg, rgba(25,22,12,0.8741667076987045) 46%, rgba(163,164,164,1) 83%);
     padding: 50px 60px;
     border-radius: 20px;
     border: 3px solid #5B5348; /* Bordo grigio-beige */

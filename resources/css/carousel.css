@@ -1,14 +1,13 @@
-#carouselExampleControls{
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
-}
+
 .carousel-item {
     height: 90vh; 
     background-size: cover;
     background-position: center;
-    top: 0;
-    
-    
+    top: 0;  
+
 }
+
+
 
 .carousel-item video {
     width: 100%; /* Imposta la larghezza al 100% del contenitore */
@@ -16,8 +15,25 @@
 }
 
 /* Media query per dispositivi medi e piccoli */
-@media (max-width: 1000px) {
+@media (max-width: 768px) {
     .carousel-item {
-        height: 29vh;
+        height: 30vh;
+        
+
+
     }
+}
+/* Media query per dispositivi grandi (oltre i 768px) */
+@media (min-width: 769px) {
+    .carousel-item {
+        /* Qui definisci gli stili per dispositivi grandi */
+        height: 77vh;
+    
+    }
+}
+
+.spazio{
+    width: 100%;
+    height: 15px;
+    background-color: black;
 }

@@ -1,8 +1,9 @@
 <x-layout>
     @guest
-        <h2 class="login-title text-center mt-1" style="margin-bottom: -7%">Accedi qui</h2>
+        
         <div class="login-container">
             <div class="login-inner-container">
+                <h2 class="login-title text-center mb-5 mt-1">Accedi qui</h2>
                 <div class="login-row justify-content-center">
                     <div class="login-main-box">
                         <form method="POST" action="{{ route('login') }}" class="login-form">

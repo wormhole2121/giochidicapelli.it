@@ -1,9 +1,9 @@
 .titolo{
     color: rgb(0, 0, 0);
-    font-family: 'Dancing Script', cursive;
-    font-family: 'Lobster', cursive;
-    font-size: 60px;
-    margin-top: 40px;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 65px;
+    margin-top: 50px;
+    margin-bottom: -20px ;
 }
 
 .chi-sono {
@@ -29,4 +29,11 @@
     max-width: 100%;
     width: auto;
     position: relative;
+}
+
+
+@media (min-width: 769px) and (max-width: 935px) {
+    .titolo{
+        margin-top: -80px ;
+    }
 }

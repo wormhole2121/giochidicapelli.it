@@ -47,7 +47,7 @@
 
     <div class="container">
         <div class="row">
-        <h2 class="text-center titolo">Galleria</h2>
+        <h2 class="text-center titolo-2">Galleria</h2>
         </div>
     </div>
 
