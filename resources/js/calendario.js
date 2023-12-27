@@ -1,5 +1,8 @@
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+let dataSelected = window.location.search.split('=')[1] !== undefined ? new Date(window.location.search.split('=')[1]) : null;
+
+let currentMonth = dataSelected !== null ? dataSelected.getMonth() : new Date().getMonth();
+let currentYear =  dataSelected !== null ? dataSelected.getFullYear() : new Date().getFullYear();
+
 
 function updateCurrentMonth() {
     const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
@@ -64,7 +67,11 @@ function generateDays() {
         spanElement.textContent = i;
 
         // Creare una nuova data per controllare il giorno della settimana
+        
+        
+        // const currentDay = dataSelected === null ? new Date(currentYear, currentMonth, i).getDay() : dataSelected.getDay();
         const currentDay = new Date(currentYear, currentMonth, i).getDay();
+        
 
         // Se è domenica o lunedì, rendi la data non selezionabile
         if (currentDay === 0 || currentDay === 1) {

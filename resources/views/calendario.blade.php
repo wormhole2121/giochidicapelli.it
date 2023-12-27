@@ -50,13 +50,13 @@
                         <div class="dates days-display" id="dates">
                             @foreach ($availableDates as $date)
                                 <div class="date">
-                                    <span class="day">{{ \Carbon\Carbon::parse($date)->format('d') }}</span>
+                                    <span data-booking-date="{{$date}}" class="day">{{ \Carbon\Carbon::parse($date)->format('d') }}</span>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET">
+                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET" style="display: none;">
                         <div class="form-group date-picker-group">
                             <label for="date">Seleziona una data:</label>
                             <select name="date" id="date" class="form-control date-dropdown">
@@ -185,6 +185,7 @@
 
 
         </div>
-    @endauth
 
+    @endauth
+    
 </x-layout>

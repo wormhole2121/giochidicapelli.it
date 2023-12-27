@@ -81,13 +81,19 @@
     gap: 25px;
 }
 
-.datepicker-section .day, .date {
+.datepicker-section, .date {
     text-align: center;
     padding: 14px 0;
     color: white;
     font-weight: 600;
     border-radius: var(--border-radius);
     transition: background var(--transition-time) ease, transform var(--transition-time) ease;
+}
+
+.date{
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 20px;
+    color: black;
 }
 
 .datepicker-section .date {
@@ -97,21 +103,27 @@
 
 .datepicker-section .date:hover {
     background: var(--accent-color);
-    color: #fff;
+    color: black;
     transform: translateY(-6px); /* Effetto sollevamento */
 }
 
 .datepicker-section .date.active {
     background: var(--accent-color);
-    color: #fff;
+    color: black;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 }
 
 /* Prenotazione */
-
+.reservation-card{
+    border-radius: 20px;
+}
 
 .reservation-section .form-group {
     margin-bottom: 20px;
+}
+
+.reservation-body{
+    border-radius: 20px;
 }
 
 .reservation-section .form-control {
