@@ -1,6 +1,5 @@
 <x-layout>
     @guest
-        {{-- ciao --}}
         <div class="login-container">
             <div class="login-inner-container">
                 <h2 class="login-title text-center mb-5 mt-1">Accedi qui</h2>
