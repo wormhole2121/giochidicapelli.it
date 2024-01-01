@@ -1,0 +1,18 @@
+{
+    "short_name": "GDC",
+    "name": "Giochi di capelli",
+    "icons": [
+      {
+        "src": "media/icona-app.png",
+        "sizes": "190x190",
+        "type": "image/png"
+      }
+
+    ],
+    "start_url": "/",
+    "background_color": "#FFFFFF",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#000000"
+  }
+  

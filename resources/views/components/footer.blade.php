@@ -7,7 +7,7 @@
                 </div>
                 <div class="footer-social">
                     <a href="https://www.facebook.com/giochidicapellienzobarber" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://wa.me/3407454912" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://wa.me/+393407454912" class="social-icon"><i class="fab fa-whatsapp"></i></a>
                     <a href="https://www.instagram.com/giochidicapellienzo/" class="social-icon"><i class="fab fa-instagram"></i></a>
                 </div>
                 <div class="footer-text">
