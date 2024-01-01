@@ -6,12 +6,12 @@
                     <img src="{{ asset('img/logo.png') }}" alt="logo"> <!-- Modifica il percorso dell'immagine -->
                 </div>
                 <div class="footer-social">
-                    <a href="https://www.facebook.com" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.twitter.com" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="https://www.instagram.com" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/giochidicapellienzobarber" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://wa.me/3407454912" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/giochidicapellienzo/" class="social-icon"><i class="fab fa-instagram"></i></a>
                 </div>
                 <div class="footer-text">
-                    <p>© 2023 - Barber Shop - All Rights Reserved</p>
+                    <p>© 2024 - Barber Shop - Giochi di capelli - All Rights Reserved</p>
                 </div>
             </div>
         </div>

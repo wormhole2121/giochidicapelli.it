@@ -32,7 +32,7 @@
                                 </div>
 
                                 <div class="input-wrapper form-group">
-                                    <input class="login-input form-control" type="text" name="phone" placeholder="Numero di telefono" required>
+                                    <input class="login-input form-control" type="tel" name="phone" placeholder="Numero di telefono" required>
                                     @error('phone')
                                         <p class="login-error-text">{{ $message }}</p>
                                     @enderror
