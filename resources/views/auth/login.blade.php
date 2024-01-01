@@ -1,6 +1,6 @@
 <x-layout>
     @guest
-        
+        {{-- ciao --}}
         <div class="login-container">
             <div class="login-inner-container">
                 <h2 class="login-title text-center mb-5 mt-1">Accedi qui</h2>
@@ -8,8 +8,7 @@
                     <div class="login-main-box">
                         <form method="POST" action="{{ route('login') }}" class="login-form">
                             @csrf
-                            <input class="login-input email-input" type="email" name="email" placeholder="Email"
-                                required>
+                            <input class="login-input email-input" type="email" name="email" placeholder="Email" required>
                             @error('email')
                                 <p class="login-error-text email-error">{{ $message }}</p>
                             @enderror
