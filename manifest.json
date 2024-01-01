@@ -3,7 +3,7 @@
     "name": "Giochi di capelli",
     "icons": [
       {
-        "src": "media/icona-app.png",
+        "src": "/media/icona-app.png",
         "sizes": "190x190",
         "type": "image/png"
       }
