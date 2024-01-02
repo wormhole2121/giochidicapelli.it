@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-12 footer-content">
                 <div class="footer-logo">
-                    <img src="{{ asset('img/logo.png') }}" alt="logo"> <!-- Modifica il percorso dell'immagine -->
+                    <!-- <img src="{{ asset('media/icona-app.png') }}" alt="logo">  -->
                 </div>
                 <div class="footer-social">
                     <a href="https://www.facebook.com/giochidicapellienzobarber" class="social-icon"><i class="fab fa-facebook-f"></i></a>

@@ -15,7 +15,7 @@
       width: 100%;
       padding-top: 50px;
       padding-bottom: 50px;
-      background: linear-gradient(184deg, rgba(25,22,12,0.8741667076987045) 46%, rgba(163,164,164,1) 83%);
+      background: linear-gradient(180deg, rgba(0,0,0,0.8631827731092436) 100%, rgba(163,164,164,0.835171568627451) 100%);
       border-radius: 10px;
       margin-top: 30px;
       margin-bottom: 10px;

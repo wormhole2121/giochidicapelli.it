@@ -1,5 +1,6 @@
 .footer-container {
-    background: rgb(161, 160, 160);
+    /* background: #c7c7c8; */
+    background-image: url(/public/media/muro.jpg) ;
     color: #fff;
     text-align: center;
     padding: 20px 0;
