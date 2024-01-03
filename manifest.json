@@ -3,14 +3,29 @@
     "name": "Giochi di capelli",
     "icons": [
       {
+        "src": "/media/icona-app-48x48.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+      {
+        "src": "/media/icona-app-96x96.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+      {
+        "src": "/media/icona-app-144x144.png",
+        "type": "image/png",
+        "sizes": "144x144"
+      },
+      {
         "src": "/media/icona-app-192x192.png",
-        "sizes": "19x192",
-        "type": "image/png"
+        "type": "image/png",
+        "sizes": "19x192"
       },
       {
         "src": "/media/icona-app-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
+        "type": "image/png",
+        "sizes": "512x512"
       }
 
     ],
