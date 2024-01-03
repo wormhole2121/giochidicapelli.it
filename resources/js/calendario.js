@@ -182,9 +182,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Controlla se c'è un orario già selezionato e seleziona il bottone corrispondente
     if (selectedTimeInput.value) {
-        let selectedButton = document.querySelector('.time-btn[data-time="${selectedTimeInput.value}"]');
+        let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
         if (selectedButton) {
             selectedButton.click(); // Simula un clic sul bottone per selezionarlo
         }
     }
+
 });

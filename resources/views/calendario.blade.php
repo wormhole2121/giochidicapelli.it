@@ -77,21 +77,21 @@
                     <div class="card reservation-card">
                         
                         <div class="card-body reservation-body">
-                            <h3 class="card-header reservation-header text-center">Prenota un Appuntamento</h3>
+                            <h3 class="card-header reservation-header text-center t-white mb-2">Prenota un Appuntamento</h3>
                             <form action="{{ route('prenota') }}" class="reservation-form" method="POST">
                                 @csrf
                                 <input type="hidden" name="date" value="{{ $selectedDate }}">
                                 <div class="form-group">
-                                    <label for="name">Nome e Cognome:</label>
+                                    <label for="name" class="t-white">Nome e Cognome:</label>
                                     <input type="text" name="name" id="name" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Numero di Telefono:</label>
+                                    <label for="phone" class="t-white">Numero di Telefono:</label>
                                     <input type="text" name="phone" id="phone" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <p>*Ogni taglio comprende lo shampoo*</p>
-                                    <label for="haircut_types">Tipologia di Tagli:</label>
+                                    <p class="t-white">*Ogni taglio comprende lo shampoo*</p>
+                                    <label for="haircut_types" class="t-white">Tipologia di Tagli:</label>
                                     <select multiple name="haircut_types[]" id="haircut_types" class="form-control" multiple
                                         required>
                                         <option value="Taglio">Taglio</option>
@@ -121,7 +121,7 @@
 
                             </div> --}}
 
-                                <div class="form-group available-time-buttons">
+                                <div class="form-group available-time-buttons t-white">
                                     <label>Seleziona un orario:</label>
                                     <div class="time-buttons-wrapper">
                                         @foreach ($availableHours as $index => $hour)
