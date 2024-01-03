@@ -14,7 +14,7 @@
         <!-- Offcanvas contenente gli elementi della navbar -->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">info</h5>
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><i class="fa-regular fa-circle-user"></i></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
@@ -24,7 +24,7 @@
                     </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('calendario') }}">Calendario</a>
+                            <a class="nav-link" href="{{ route('calendario') }}">Prenota</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"

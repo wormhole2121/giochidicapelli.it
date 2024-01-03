@@ -34,9 +34,9 @@
                 <div class="col-md-6 col-sm-12 datepicker-section">
                     <div class="calendar-wrapper">
                         <div class="header month-selector">
-                            <button id="prevMonth" class="btn month-prev">&lt;</button>
+                            <button id="prevMonth" class="btn month-prev active">&lt;</button>
                             <h2 id="currentMonth" class="text-center month-display"></h2>
-                            <button id="nextMonth" class="btn month-next">&gt;</button>
+                            <button id="nextMonth" class="btn month-next active">&gt;</button>
                         </div>
                         <div class="days weekdays-header">
                             <div class="day">Dom</div>
@@ -50,13 +50,15 @@
                         <div class="dates days-display" id="dates">
                             @foreach ($availableDates as $date)
                                 <div class="date">
-                                    <span data-booking-date="{{$date}}" class="day">{{ \Carbon\Carbon::parse($date)->format('d') }}</span>
+                                    <span data-booking-date="{{ $date }}"
+                                        class="day">{{ \Carbon\Carbon::parse($date)->format('d') }}</span>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET" style="display: none;">
+                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET"
+                        style="display: none;">
                         <div class="form-group date-picker-group">
                             <label for="date">Seleziona una data:</label>
                             <select name="date" id="date" class="form-control date-dropdown">
@@ -75,7 +77,7 @@
                 <!-- Modulo di Prenotazione -->
                 <div class="col-md-6 col-sm-12 reservation-section">
                     <div class="card reservation-card">
-                        
+
                         <div class="card-body reservation-body">
                             <h3 class="card-header reservation-header text-center t-white mb-2">Prenota un Appuntamento</h3>
                             <form action="{{ route('prenota') }}" class="reservation-form" method="POST">
@@ -96,30 +98,13 @@
                                         required>
                                         <option value="Taglio">Taglio</option>
                                         <option value="Taglio con modellatura barba">Taglio con modellatura barba</option>
-                                        <option value="Taglio Razor fade">Taglio Razor fade</option>
+                                        <option value="Taglio Razor fade(Sfumatura)">Taglio Razor fade (sfumatura)</option>
                                         <option value="Taglio shampoo e modellatura">Taglio shampoo e modellatura</option>
                                         <option value="Taglio Children">Taglio Children</option>
                                         <option value="Modellatura barba">Modellatura barba</option>
                                     </select>
                                 </div>
-                                {{-- <div class="form-group">
-                                <label for="start_time">Orario di Inizio:</label>
-                                <input type="time" name="start_time" id="start_time" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="end_time">Orario di Fine:</label>
-                                <input type="time" name="end_time" id="end_time" class="form-control" required>
-                            </div> --}}
-                                {{-- <div class="form-group available-time-buttons">
-                                <label>Seleziona un orario:</label>
-                                <div class="time-buttons-wrapper">
-                                    @foreach ($availableHours as $hour)
-                                        <button type="button" class="btn btn-outline-primary time-btn" data-time="{{ $hour }}">{{ $hour }}</button>
-                                    @endforeach
-                                </div>
-                                <input type="hidden" id="selectedTime" name="start_time" value="{{ old('start_time') }}" required>
 
-                            </div> --}}
 
                                 <div class="form-group available-time-buttons t-white">
                                     <label>Seleziona un orario:</label>
@@ -150,32 +135,29 @@
                             <br>
                             <strong>Orario:</strong> {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
                             {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
-                            @if (Auth::check() && $booking->user_id == Auth::id())
+                            @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
                                 <br>
-                                <strong>Tuo Nome:</strong> {{ Auth::user()->name }} {{ Auth::user()->surname }}
+                                <strong>Nome Utente:</strong> {{ $booking->user->name }} {{ $booking->user->surname }}
+                                {{-- Assumi che tu abbia una relazione user nella tua Booking model --}}
                                 <br>
-                                <strong>Tuo Numero di Telefono:</strong> {{ $booking->phone }}
+                                <strong>Numero di Telefono:</strong> {{ $booking->phone }}
                                 <br>
                                 <strong>Tipologie di Taglio:</strong>
-
-                                @if (is_array(json_decode($booking->haircut_types, true)))
-                                    {{ implode(', ', json_decode($booking->haircut_types, true)) }}
-                                @else
-                                    {{ $booking->haircut_types }}
-                                @endif
+                                {{ is_array(json_decode($booking->haircut_types, true)) ? implode(', ', json_decode($booking->haircut_types, true)) : $booking->haircut_types }}
                             @else
                                 <br>
                                 <strong>Stato:</strong> Prenotato
                             @endif
-                            @if (Auth::check() && $booking->user_id == Auth::id())
+                            {{-- Logica per il pulsante di eliminazione, se necessario --}}
+                            @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
                                 <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form"
                                     method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                                     <button type="submit" class="btn delete-booking-btn mt-2">Elimina</button>
-                                    <a href="{{ route('le-mie-prenotazioni') }}" class="btn btn-info mt-2">Mostra
-                                        dettagli</a>
+                                    <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}"
+                                        class="btn btn-info mt-2">Mostra dettagli</a>
                                 </form>
                             @endif
                         </li>
@@ -183,9 +165,8 @@
                 </ul>
             @endif
 
-
         </div>
 
     @endauth
-    
+
 </x-layout>

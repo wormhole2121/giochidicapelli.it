@@ -22,6 +22,7 @@
     #navbar .nav-link:hover,
     #navbar .nav-link:focus {
         color: black !important;
+        font-size: 25px;
     }
 }
 

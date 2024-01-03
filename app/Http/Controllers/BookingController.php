@@ -20,13 +20,13 @@ class BookingController extends Controller
 
         if (Auth::check() && Auth::user()->is_admin) {
             // L'amministratore può vedere tutte le prenotazioni
-            $bookings = Booking::all();
+            $bookings = Booking::where('date', $selectedDate)->get();
         } else {
             // Gli utenti normali vedono solo le loro prenotazioni
-            $bookings = Booking::where('user_id', Auth::id())->get();
+            $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
         }
 
-        // return view('booking.index', compact('bookings'));
+
 
         // Recupera tutte le prenotazioni per la data selezionata
         $bookings = Booking::where('date', $selectedDate)->get();
@@ -72,8 +72,9 @@ class BookingController extends Controller
             $mins = $minutes % 60;
             return sprintf('%02d:%02d', $hours, $mins);
         });
-
-        $bookedHours = $bookings->where('date', $selectedDate)->pluck('start_time')->all();
+        // Recupera tutti gli orari prenotati per la data selezionata
+        $bookedHours = Booking::where('date', $selectedDate)->pluck('start_time')->all();
+        // Calcola gli orari disponibili escludendo quelli prenotati
         $availableHours = array_diff($availableTimes->toArray(), $bookedHours);
 
         // Verifica se l'utente autenticato ha già prenotato per la data selezionata
@@ -100,7 +101,7 @@ class BookingController extends Controller
             'phone' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'haircut_types' => 'required|array',
-            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade,Taglio shampoo e modellatura,Taglio Children,Modellatura barba',
+            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade(Sfumatura),Taglio shampoo e modellatura,Taglio Children,Modellatura barba',
 
         ]);
 
@@ -211,10 +212,10 @@ class BookingController extends Controller
         }
 
         // Verifica se l'utente autenticato è autorizzato a eliminare l'appuntamento
-        // if (Auth::check() && $booking->user_id == Auth::id()) {
-        //     $booking->delete();
-        //     return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
-        // }
+        if (Auth::check() && $booking->user_id == Auth::id()) {
+            $booking->delete();
+            return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
+        }
 
         if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id())) {
             $booking->delete();
