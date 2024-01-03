@@ -16,28 +16,30 @@
 
 .chi-sono-image{
    max-width: 100%;
-   width: auto;
+   width: 400px;
    max-height: 100%;
    position: relative;
    border-radius: 35px;
    top: auto;
    left: auto;
+   float: right;
 }
 
 .chi-sono-p{
     color: white;
-    font-size: 30px;
+    font-size: 20px;
     max-width: 100%;
     width: auto;
     position: relative;
+    text-align: center;
 }
 
 
-@media (min-width: 769px) and (max-width: 935px) {
+/* @media (min-width: 769px) and (max-width: 935px) {
     .titolo{
         margin-top: -80px ;
     }
-}
+} */
 
 @media (max-width: 768px){
     .chi-sono-p{
