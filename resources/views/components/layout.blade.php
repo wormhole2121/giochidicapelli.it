@@ -13,11 +13,11 @@
 
     <!-- json -->
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" sizes="48x48" href="/media/icona-app-48x48">
-    <link rel="apple-touch-icon" sizes="96x96" href="/media/icona-app-96x96">
-    <link rel="apple-touch-icon" sizes="144x144" href="/media/icona-app-144x144">
-    <link rel="apple-touch-icon" sizes="192x192" href="/media/icona-app-192x192">
-    <link rel="apple-touch-icon" sizes="512x512" href="/media/icona-app-512x512">
+    <link rel="apple-touch-icon" sizes="48x48" href="/media/icona-app-48x48.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/media/icona-app-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/media/icona-app-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/media/icona-app-192x192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/media/icona-app-512x512.png">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet" />
