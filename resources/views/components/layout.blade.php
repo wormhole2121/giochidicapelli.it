@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,23 +13,31 @@
 
     <!-- json -->
     <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="48x48" href="/media/icona-app-48x48">
+    <link rel="apple-touch-icon" sizes="96x96" href="/media/icona-app-96x96">
+    <link rel="apple-touch-icon" sizes="144x144" href="/media/icona-app-144x144">
+    <link rel="apple-touch-icon" sizes="192x192" href="/media/icona-app-192x192">
+    <link rel="apple-touch-icon" sizes="512x512" href="/media/icona-app-512x512">
+
     <!-- Font Awesome -->
-    <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"rel="stylesheet" />
     {{-- aos --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     {{-- google font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lobster&display=swap" rel="stylesheet"> 
-    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lobster&display=swap" rel="stylesheet">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto+Condensed:ital,wght@1,100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto+Condensed:ital,wght@1,100&display=swap"
+        rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lobster&family=Roboto+Condensed:ital,wght@1,100&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lobster&family=Roboto+Condensed:ital,wght@1,100&display=swap"
+        rel="stylesheet">
+
 
     <link rel="icon" type="image/png" sizes="190x190" href="/media/icona-app.png">
     <!-- <link rel="icon" type="image/png" sizes="512x512" href="/path/to/icon-512x512.png"> -->
@@ -42,26 +51,27 @@
     @vite('resources/css/app.css')
     <title>Giochi di capelli</title>
 </head>
+
 <body>
-    
-    <x-navbar></x-navbar>  
-    <header  class="container-image">
-       
+
+    <x-navbar></x-navbar>
+    <header class="container-image">
+
     </header>
-    
+
     {{-- <div class="intro">
         <i class="fa-solid fa-arrow-up" style="color: #775e18;"></i>
         <h1>Per visualizzare i contenuti Accedi o egistrati</h1>
     </div> --}}
-    
-    
-    {{$slot}}
-    
-   
+
+
+    {{ $slot }}
+
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    
+
     {{-- aos js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Swiper JS -->
@@ -72,16 +82,9 @@
         });
     </script>
 
-    
+
 
     @vite('resources/js/app.js')
 </body>
+
 </html>
-    
-
-
-
-
-
-
-
