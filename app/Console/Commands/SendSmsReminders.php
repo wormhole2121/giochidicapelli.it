@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Models\Booking;
 use Carbon\Carbon;
 use App\Jobs\SendReminderSms;
@@ -28,11 +29,10 @@ class SendSmsReminders extends Command
     public function handle()
     {
         $now = Carbon::now();
-        $inFourHours = $now->copy()->addHour(299);
-
+        $inFourHours = $now->copy()->addMinutes(530);
         $bookings = Booking::where('start_time', '>=', $now)
-                            ->where('start_time', '<=', $inFourHours)
-                            ->get();
+            ->where('start_time', '<=', $inFourHours)
+            ->get();
 
         foreach ($bookings as $booking) {
             dispatch(new SendReminderSms($booking));

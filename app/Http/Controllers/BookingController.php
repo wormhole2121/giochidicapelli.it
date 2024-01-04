@@ -138,7 +138,7 @@ class BookingController extends Controller
         $validDayOfWeeks = [2, 3, 4, 5, 6]; // Dal martedì al sabato
 
         $validTimeRanges = [
-            'morning' => ['08:30', '12:00'],
+            'morning' => ['08:00', '12:00'],
             'afternoon' => ['14:00', '19:15'],
             'thursday' => ['14:00', '21:00']
         ];
