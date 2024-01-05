@@ -56,11 +56,16 @@ class BookingController extends Controller
 
         if ($dayOfWeek == 4) { // Giovedì
             $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
-        } elseif (in_array($dayOfWeek, [2, 3, 5, 6])) { // Martedì, Mercoledì, Venerdì, Sabato
-            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+        } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:30
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        } elseif (in_array($dayOfWeek, [5, 6])) { // Venerdì, Sabato
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
             $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         }
+
 
         // Converti i minuti in orari e rimuovi quelli prenotati
         $availableTimes = collect($timeslots)->map(function ($minutes) {
