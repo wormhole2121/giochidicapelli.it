@@ -100,7 +100,7 @@
                                 <div class="form-group available-time-buttons t-white">
                                     <label>Seleziona un orario:</label>
                                     <div class="time-buttons-wrapper">
-                                        @foreach ($availableHours as $index => $hour)
+                                        @foreach ($availableTimes as $index => $hour)
                                             <input type="radio" id="time-{{ $index }}" name="start_time"
                                                 value="{{ $hour }}" class="time-radio"
                                                 {{ old('start_time') == $hour ? 'checked' : '' }}>
@@ -120,27 +120,22 @@
             @if ($selectedDate)
                 <ul class="list-group bookings-list my-3">
                     @foreach ($bookings as $booking)
-                        <li class="list-group-item booking-item" style="margin-bottom:20px; border-radius:10px">
-                            <strong>Data:</strong>
-                            {{ \Carbon\Carbon::parse($booking->date)->isoFormat('dddd, D MMMM YYYY') }}
-                            <br>
-                            <strong>Orario:</strong> {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
-                            {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
-                            @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
+                        @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
+                            <li class="list-group-item booking-item" style="margin-bottom:20px; border-radius:10px">
+                                <strong>Data:</strong>
+                                {{ \Carbon\Carbon::parse($booking->date)->isoFormat('dddd, D MMMM YYYY') }}
+                                <br>
+                                <strong>Orario:</strong> {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
+                                {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
                                 <br>
                                 <strong>Nome Utente:</strong> {{ $booking->user->name }} {{ $booking->user->surname }}
-                                {{-- Assumi che tu abbia una relazione user nella tua Booking model --}}
                                 <br>
                                 <strong>Numero di Telefono:</strong> {{ $booking->phone }}
                                 <br>
                                 <strong>Tipologie di Taglio:</strong>
                                 {{ is_array(json_decode($booking->haircut_types, true)) ? implode(', ', json_decode($booking->haircut_types, true)) : $booking->haircut_types }}
-                            @else
-                                <br>
-                                <strong>Stato:</strong> Prenotato
-                            @endif
-                            {{-- Logica per il pulsante di eliminazione, se necessario --}}
-                            @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
+
+                                {{-- Logica per il pulsante di eliminazione, se necessario --}}
                                 <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form"
                                     method="POST">
                                     @csrf
@@ -150,11 +145,12 @@
                                     <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}"
                                         class="btn btn-info mt-2">Mostra dettagli</a>
                                 </form>
-                            @endif
-                        </li>
+                            </li>
+                        @endif
                     @endforeach
                 </ul>
             @endif
+
 
         </div>
 

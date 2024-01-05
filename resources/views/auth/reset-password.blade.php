@@ -1,4 +1,4 @@
-<x-layout>
+{{-- <x-layout>
     <div class="reset-password-container my-3">
         <div class="reset-password-inner-container col-12 col-sm-10 col-md-8 col-lg-6 mx-auto">
             <h2 class="text-center mb-4">Reimposta Password</h2>
@@ -34,4 +34,4 @@
             </form>
         </div>
     </div>
-</x-layout>
+</x-layout> --}}

@@ -26,11 +26,30 @@ class CreateNewUser implements CreatesNewUsers
                 'string',
                 'email',
                 'max:255',
-                Rule::unique(User::class),
+                'unique:users,email', // verifica che l'email non sia già stata utilizzata
             ],
-            'phone' => ['required', 'string', 'max:15', 'unique:users'],
-            'password' => $this->passwordRules(),
-        ])->validateWithBag('register');;
+            'phone' => [
+                'required',
+                'string',
+                'max:15',
+                'unique:users,phone', // verifica che il telefono non sia già stato utilizzato
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:5',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+            ],
+        ], [
+            'email.unique' => 'Questa email è già stata utilizzata.',
+            'phone.unique' => 'Questo numero è già stato utilizzato.',
+            'password.min' => 'La password deve contenere almeno 5 caratteri.',
+            'password.regex' => [
+                'regex:/[0-9]/[@$!%*#?&]/' => 'La password deve contenere almeno un numero da (0-9) e almeno un carattere speciale. es.(@$!%*#?&)',
+                // 'regex:/[@$!%*#?&]/' => 'La password deve contenere almeno un carattere speciale. es.(@$!%*#?&)'
+            ],
+        ])->validateWithBag('register');
 
         return User::create([
             'name' => $input['name'],

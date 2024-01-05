@@ -17,19 +17,19 @@ class BookingController extends Controller
         // Recupera la data selezionata dalla richiesta
         $selectedDate = $request->input('date');
 
-
+        // Seleziona le prenotazioni in base al ruolo dell'utente
         if (Auth::check() && Auth::user()->is_admin) {
             // L'amministratore può vedere tutte le prenotazioni
-            $bookings = Booking::where('date', $selectedDate)->get();
+            $bookings = Booking::where('date', $selectedDate)->orderBy('start_time', 'asc')->get();
         } else {
             // Gli utenti normali vedono solo le loro prenotazioni
             $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
         }
 
-
-
-        // Recupera tutte le prenotazioni per la data selezionata
-        $bookings = Booking::where('date', $selectedDate)->get();
+        // Recupera tutti gli orari prenotati per la data selezionata
+        $bookedHours = $bookings->pluck('start_time')->map(function ($time) {
+            return Carbon::parse($time)->format('H:i');
+        })->all();
 
         // Recupera tutte le date già prenotate
         $bookedDates = Booking::where('date', '>=', now())
@@ -44,7 +44,9 @@ class BookingController extends Controller
 
         while ($startDate <= $endDate) {
             $date = $startDate->format('Y-m-d');
-            $availableDates[] = $date;
+            if (!$bookedDates->contains($date)) {
+                $availableDates[] = $date;
+            }
             $startDate->addDay();
         }
 
@@ -55,27 +57,19 @@ class BookingController extends Controller
         if ($dayOfWeek == 4) { // Giovedì
             $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
         } elseif (in_array($dayOfWeek, [2, 3, 5, 6])) { // Martedì, Mercoledì, Venerdì, Sabato
-            // Modifica qui per Venerdì e Sabato
-            if (in_array($dayOfWeek, [5, 6])) { // Venerdì, Sabato
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
-            } else {
-                $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:30
-            }
-            // Modifica al range del pomeriggio per includere un orario in più
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
             $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         }
 
-        // Converti i minuti in orari
+        // Converti i minuti in orari e rimuovi quelli prenotati
         $availableTimes = collect($timeslots)->map(function ($minutes) {
             $hours = floor($minutes / 60);
             $mins = $minutes % 60;
             return sprintf('%02d:%02d', $hours, $mins);
-        });
-        // Recupera tutti gli orari prenotati per la data selezionata
-        $bookedHours = Booking::where('date', $selectedDate)->pluck('start_time')->all();
-        // Calcola gli orari disponibili escludendo quelli prenotati
-        $availableHours = array_diff($availableTimes->toArray(), $bookedHours);
+        })->reject(function ($time) use ($bookedHours) {
+            return in_array($time, $bookedHours);
+        })->values()->toArray();
 
         // Verifica se l'utente autenticato ha già prenotato per la data selezionata
         $userBookings = [];
@@ -85,10 +79,11 @@ class BookingController extends Controller
                 ->get();
         }
 
-        $isDateBooked = $bookings->where('date', $selectedDate)->count() > 0;
+        $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
 
-        return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableHours'));
+        return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes'));
     }
+
 
 
     public function prenota(Request $request)
