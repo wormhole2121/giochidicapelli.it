@@ -27,9 +27,11 @@ class BookingController extends Controller
         }
 
         // Recupera tutti gli orari prenotati per la data selezionata
-        $bookedHours = $bookings->pluck('start_time')->map(function ($time) {
-            return Carbon::parse($time)->format('H:i');
-        })->all();
+        $bookedHours = Booking::where('date', $selectedDate)
+            ->pluck('start_time')
+            ->map(function ($time) {
+                return Carbon::parse($time)->format('H:i');
+            });
 
         // Recupera tutte le date già prenotate
         $bookedDates = Booking::where('date', '>=', now())
@@ -60,11 +62,16 @@ class BookingController extends Controller
             $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:30
             $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
-        } elseif (in_array($dayOfWeek, [5, 6])) { // Venerdì, Sabato
+        } elseif ($dayOfWeek == 5) { // Venerdì
             $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
             $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
+        } elseif ($dayOfWeek == 6) { // Sabato
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
+            $afternoon = range(14 * 60, 19 * 60, 25); // Finisce alle 19:00
+            $timeslots = array_merge($morning, $afternoon);
         }
+
 
 
         // Converti i minuti in orari e rimuovi quelli prenotati
@@ -73,7 +80,7 @@ class BookingController extends Controller
             $mins = $minutes % 60;
             return sprintf('%02d:%02d', $hours, $mins);
         })->reject(function ($time) use ($bookedHours) {
-            return in_array($time, $bookedHours);
+            return in_array($time, $bookedHours->toArray());
         })->values()->toArray();
 
         // Verifica se l'utente autenticato ha già prenotato per la data selezionata
@@ -199,7 +206,11 @@ class BookingController extends Controller
         // Imposta la lingua locale su italiano
         Carbon::setLocale('it');
         // Recupera le prenotazioni dell'utente autenticato
-        $userBookings = Booking::where('user_id', Auth::id())->get();
+        $userBookings = Booking::where('user_id', Auth::id())
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->get();
+
         return view('le-mie-prenotazioni', compact('userBookings'));
     }
 

@@ -18,7 +18,7 @@
                                 <p class="login-error-text password-error">{{ $message }}</p>
                             @enderror
 
-                            {{-- <a href="{{ route('password.request') }}" class="forgot-password-link">Password dimenticata?</a> --}}
+                            <a href="{{ route('password.request') }}" class="forgot-password-link">Password dimenticata?</a>
 
                             <button class="login-submit-btn" type="submit">Accedi</button>
                         </form>

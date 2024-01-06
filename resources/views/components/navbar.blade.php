@@ -27,6 +27,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('calendario') }}">Prenota</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('le-mie-prenotazioni') }}">Le mie prenotazioni</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
