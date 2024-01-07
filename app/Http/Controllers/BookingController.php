@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Jobs\SendAppointmentReminder;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
@@ -195,8 +196,10 @@ class BookingController extends Controller
 
 
         if ($booking->save()) {
+            $startTime = Carbon::parse($booking->start_time);
+            $reminderTime = $booking->start_time->subHour();
+            SendAppointmentReminder::dispatch($booking)->delay($reminderTime);
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
-            
             return redirect()->route('calendario')->with('success', 'Prenotazione effettuata con successo!');
         } else {
             return redirect()->route('calendario')->with('error', 'Errore durante il salvataggio della prenotazione.');
