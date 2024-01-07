@@ -31,7 +31,10 @@ Route::post('/prenota', [BookingController::class, 'prenota'])->name('prenota');
 Route::get('/le-mie-prenotazioni', [BookingController::class, 'leMiePrenotazioni'])->name('le-mie-prenotazioni');
 Route::delete('/elimina/{id}', [BookingController::class, 'elimina'])->name('elimina');
 
-
+Route::get('/terms', function () {
+     return view('terms');
+});
+ 
 
 // rotte reset password
 

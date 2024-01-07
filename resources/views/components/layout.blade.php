@@ -53,7 +53,6 @@
 </head>
 
 <body>
-
     <x-navbar></x-navbar>
     <header class="container-image">
 
@@ -82,6 +81,54 @@
         });
     </script>
 
+   <!-- Banner di Consenso ai Cookie -->
+    <div id="cookieConsentBanner" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; background-color: #555; color: white; text-align: center; padding: 15px; z-index: 1000;">
+        <p>Questo sito utilizza i cookie per migliorare l'esperienza utente. <a href="{{url('/terms') }}" style="color: #aaa;">Leggi la nostra politica sui cookie</a>.</p>
+        <button id="acceptCookies2" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer;">Accetta Cookie</button>
+        <button id="rejectCookies" style="background-color: #f44336; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer;">Rifiuta Cookie</button>
+    </div>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (getCookie("user_consent") === null) {
+                document.getElementById("cookieConsentBanner").style.display = "block";
+            }
+
+            document.getElementById("acceptCookies2").addEventListener("click", function() {
+                setCookie("user_consent", "accepted", 365, 'None'); // Imposta SameSite a None per i cookie cross-site
+                document.getElementById("cookieConsentBanner").style.display = "none";
+            });
+
+            document.getElementById("rejectCookies").addEventListener("click", function() {
+                setCookie("user_consent", "rejected", 365, 'Lax'); // Imposta SameSite a Lax per i cookie standard
+                document.getElementById("cookieConsentBanner").style.display = "none";
+                // Implementa qui ulteriori azioni in caso di rifiuto dei cookie
+            });
+        });
+
+        function setCookie(name, value, days, sameSite = 'Lax') {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=" + sameSite + "; Secure";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+    </script>
 
 
     @vite('resources/js/app.js')

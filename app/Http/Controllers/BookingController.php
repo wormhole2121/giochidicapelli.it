@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Mail\BookingConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Booking;
 use Carbon\Carbon;
@@ -194,6 +195,8 @@ class BookingController extends Controller
 
 
         if ($booking->save()) {
+            Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
+            
             return redirect()->route('calendario')->with('success', 'Prenotazione effettuata con successo!');
         } else {
             return redirect()->route('calendario')->with('error', 'Errore durante il salvataggio della prenotazione.');

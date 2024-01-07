@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Mail;
-
-use Illuminate\Support\Facades\Mail;
+use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,16 +9,25 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class invioEmail extends Mailable
+class BookingConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $booking;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Booking $booking)
     {
-        Mail::to('destinatario@example.com')->send(new invioEmail());
+        $this->booking = $booking;
+    }
+
+    public function build()
+    {
+        return $this->subject('Conferma della tua prenotazione')
+        ->view('emails.booking-confirmation', [
+            'booking' => $this->booking,
+        ]);
     }
 
     /**
@@ -28,7 +36,7 @@ class invioEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invio Email',
+            subject: 'Booking Confirmation Mail',
         );
     }
 
@@ -38,7 +46,7 @@ class invioEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.booking-confirmation',
         );
     }
 
