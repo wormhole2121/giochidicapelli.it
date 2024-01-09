@@ -197,7 +197,7 @@ class BookingController extends Controller
 
         if ($booking->save()) {
             $startTime = Carbon::parse($booking->start_time);
-            $reminderTime = $booking->start_time->subHour();
+            $reminderTime = $booking->start_time->subHour(4);
             SendAppointmentReminder::dispatch($booking)->delay($reminderTime);
             Mail::to($booking->user->email)->send(new BookingConfirmationMail($booking));
             return redirect()->route('calendario')->with('success', 'Prenotazione effettuata con successo!');
