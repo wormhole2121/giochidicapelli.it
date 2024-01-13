@@ -10,7 +10,7 @@
             <form action="{{ route('password.email') }}" method="post" class="reset-password-form">
                 @csrf
                 <div class="form-group my-2">
-                    <label for="email" class="reset-password-label">Email:</label>
+                    <label for="email" class="reset-password-label text-white">Email:</label>
                     <input type="email" name="email" id="email" class="reset-password-input form-control">
                 </div>
                 <div class="form-group text-center">
