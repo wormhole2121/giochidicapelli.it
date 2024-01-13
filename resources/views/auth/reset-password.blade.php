@@ -14,17 +14,17 @@
                 <input type="hidden" name="token" value="{{ $token }}">
                 
                 <div class="form-group">
-                    <label for="email" class="reset-password-label">Email:</label>
+                    <label for="email" class="reset-password-label text-white">Email:</label>
                     <input type="email" name="email" id="email" class="reset-password-input form-control" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password" class="reset-password-label">Nuova Password:</label>
+                    <label for="password" class="reset-password-label text-white">Nuova Password:</label>
                     <input type="password" name="password" id="password" class="reset-password-input form-control" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password_confirmation" class="reset-password-label">Conferma Password:</label>
+                    <label for="password_confirmation" class="reset-password-label text-white">Conferma Password:</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" class="reset-password-input form-control" required>
                 </div>
 
