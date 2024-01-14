@@ -71,10 +71,9 @@ class BookingController extends Controller
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($dayOfWeek == 6) { // Sabato
             $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
-            $afternoon = range(14 * 60, 1115, 25); // Finisce alle 18:35
+            $afternoon = range(14 * 60, 1115, 25); // Finisce alle 18.35
             $timeslots = array_merge($morning, $afternoon);
         }
-
 
 
 
