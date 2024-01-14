@@ -18,6 +18,11 @@
                                 <p class="login-error-text password-error">{{ $message }}</p>
                             @enderror
 
+                            <div class="form-group">
+                                <input type="checkbox" name="remember" id="remember">
+                                <label class="text-white" for="remember">Rimani collegato</label>
+                            </div>
+
                             <a href="{{ route('password.request') }}" class="forgot-password-link">Password dimenticata?</a>
 
                             <button class="login-submit-btn" type="submit">Accedi</button>
