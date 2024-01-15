@@ -60,7 +60,7 @@ class BookingController extends Controller
         $timeslots = [];
 
         if ($dayOfWeek == 4) { // Giovedì
-            $timeslots = range(14 * 60, 21 * 60, 30); // Fine alle 21:00
+            $timeslots = range(14 * 60, 20.5 * 60, 30); // Inizia alle 14:00, ultimo appuntamento inizia alle 20:30
         } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
             $morning = range(8.5 * 60, 11.5 * 60, 30); // Inizia alle 08:30, ultimo appuntamento inizia alle 11:30
             $afternoon = range(14 * 60, 19 * 60, 30); // Fine alle 19:00
