@@ -60,21 +60,20 @@ class BookingController extends Controller
         $timeslots = [];
 
         if ($dayOfWeek == 4) { // Giovedì
-            $timeslots = range(14 * 60, 20.5 * 60, 30); // Inizia alle 14:00, ultimo appuntamento inizia alle 20:30
+            $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
         } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
-            $morning = range(8.5 * 60, 11.5 * 60, 30); // Inizia alle 08:30, ultimo appuntamento inizia alle 11:30
-            $afternoon = range(14 * 60, 19 * 60, 30); // Fine alle 19:00
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:30
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($dayOfWeek == 5) { // Venerdì
-            $morning = range(8 * 60, 11.5 * 60, 30); // Inizia alle 08:00, ultimo appuntamento inizia alle 11:30
-            $afternoon = range(14 * 60, 19 * 60, 30); // Fine alle 19:00
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($dayOfWeek == 6) { // Sabato
-            $morning = range(8 * 60, 11.5 * 60, 30); // Inizia alle 08:00, ultimo appuntamento inizia alle 11:30
-            $afternoon = range(14 * 60, 18.5 * 60, 30); // Inizia alle 14:00, ultimo appuntamento inizia alle 18:30
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
+            $afternoon = range(14 * 60, 1115, 25); // Ultimo appuntamento inizia alle 18:35 e finisce alle 18:55
             $timeslots = array_merge($morning, $afternoon);
         }
-
 
 
         // Converti i minuti in orari e rimuovi quelli prenotati
