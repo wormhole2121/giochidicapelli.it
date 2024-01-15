@@ -90,7 +90,6 @@
                                         <option value="Taglio">Taglio</option>
                                         <option value="Taglio con modellatura barba">Taglio con modellatura barba</option>
                                         <option value="Taglio Razor fade(Sfumatura)">Taglio Razor fade (sfumatura)</option>
-                                        <option value="Taglio e modellatura">Taglio e modellatura</option>
                                         <option value="Taglio Children">Taglio Children (fino a 10 anni)</option>
                                         <option value="Modellatura barba">Modellatura barba</option>
                                     </select>
