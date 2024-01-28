@@ -108,7 +108,7 @@
 }
 
 .datepicker-section .date.active {
-    background: var(--accent-color);
+    background: gray;
     color: black;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 }

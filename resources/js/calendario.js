@@ -1,38 +1,41 @@
-let dataSelected = window.location.search.split('=')[1] !== undefined ? new Date(window.location.search.split('=')[1]) : null;
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let selectedDate = null;
 
-let currentMonth = dataSelected !== null ? dataSelected.getMonth() : new Date().getMonth();
-let currentYear =  dataSelected !== null ? dataSelected.getFullYear() : new Date().getFullYear();
-
+const params = new URLSearchParams(window.location.search);
+if (params.has('date')) {
+    selectedDate = new Date(params.get('date'));
+    currentMonth = selectedDate.getMonth();
+    currentYear = selectedDate.getFullYear();
+}
 
 function updateCurrentMonth() {
     const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
     document.getElementById("currentMonth").textContent = monthNames[currentMonth] + ' ' + currentYear;
 }
 
-document.getElementById("prevMonth").addEventListener("click", () => {
-    if (currentMonth > 0) {
-        currentMonth--;
-    } else {
+function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    } else if (currentMonth < 0) {
         currentMonth = 11;
         currentYear--;
     }
     updateCurrentMonth();
     generateDays();
+}
+
+document.getElementById("prevMonth").addEventListener("click", () => {
+    changeMonth(-1);
 });
 
 document.getElementById("nextMonth").addEventListener("click", () => {
-    if (currentMonth < 11) {
-        currentMonth++;
-    } else {
-        currentMonth = 0;
-        currentYear++;
-    }
-    updateCurrentMonth();
-    generateDays();
+    changeMonth(1);
 });
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    document.querySelector(".card");
+window.addEventListener("DOMContentLoaded", () => {
     updateCurrentMonth();
     generateDays();
 });
@@ -44,88 +47,41 @@ function generateDays() {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
-    // Aggiungere date vuote per allineare il primo giorno del mese
     let startingDay = firstDayOfMonth.getDay();
     for (let i = 0; i < startingDay; i++) {
-        const prevDateElement = document.createElement("div");
-        prevDateElement.classList.add("date", "out-of-month");
-
-        const spanElement = document.createElement("span");
-        spanElement.classList.add("day");
-        spanElement.textContent = ""; 
-
-        prevDateElement.appendChild(spanElement);
-        datesContainer.appendChild(prevDateElement);
+        const emptyDateElement = document.createElement("div");
+        emptyDateElement.classList.add("date", "out-of-month");
+        datesContainer.appendChild(emptyDateElement);
     }
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+        const date = new Date(currentYear, currentMonth, i);
+        const dayOfWeek = date.getDay();
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
+        dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
 
         const spanElement = document.createElement("span");
         spanElement.classList.add("day");
         spanElement.textContent = i;
 
-        // Creare una nuova data per controllare il giorno della settimana
-        
-        
-        // const currentDay = dataSelected === null ? new Date(currentYear, currentMonth, i).getDay() : dataSelected.getDay();
-        const currentDay = new Date(currentYear, currentMonth, i).getDay();
-        
-
-        // Se è domenica o lunedì, rendi la data non selezionabile
-        if (currentDay === 0 || currentDay === 1) {
-            spanElement.classList.add("non-selectable"); // Aggiungi la tua classe CSS qui
-            dateElement.classList.add("non-selectable"); // Opzionale: aggiungi anche la classe al contenitore se necessario
-        } else {
-            // Aggiungi un gestore di eventi solo se la data è selezionabile
+        if (dayOfWeek !== 0 && dayOfWeek !== 1) {
+            // Solo i giorni che non sono domenica (0) o lunedì (1) sono selezionabili
             dateElement.addEventListener("click", () => {
-                const selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-                updateDateDropdown(selectedDate);
-                document.querySelector('.btn-show-bookings').click();
-
-                // Rimuovi la classe 'active' da tutte le date
-                datesContainer.querySelectorAll('.date').forEach((d) => {
-                    d.classList.remove('active');
-                });
-
-                // Aggiungi la classe 'active' solo alla data selezionata
-                dateElement.classList.add('active');
+                window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
             });
-        }
-
-        // Verifica se la data è quella selezionata e aggiungi la classe 'active'
-        if (
-            currentYear === new Date().getFullYear() &&
-            currentMonth === new Date().getMonth() &&
-            i === new Date().getDate()
-        ) {
-            dateElement.classList.add("active");
+        } else {
+            // Applica una classe CSS per giorni non selezionabili (ad esempio, 'non-selectable')
+            dateElement.classList.add("non-selectable");
         }
 
         dateElement.appendChild(spanElement);
         datesContainer.appendChild(dateElement);
+
+        if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
+            dateElement.classList.add('active');
+        }
     }
-
-    // Aggiungi le date vuote per allineare l'ultimo giorno del mese
-    let endingDay = 6 - lastDayOfMonth.getDay();
-    for (let i = 1; i <= endingDay; i++) {
-        const nextDateElement = document.createElement("div");
-        nextDateElement.classList.add("date", "out-of-month");
-
-        const spanElement = document.createElement("span");
-        spanElement.classList.add("day");
-        spanElement.textContent = ""; 
-
-        nextDateElement.appendChild(spanElement);
-        datesContainer.appendChild(nextDateElement);
-    }
-}
-
-function deselectAllDays() {
-    document.querySelectorAll(".calendar .date.selected").forEach(el => {
-        el.classList.remove("selected");
-    });
 }
 
 function updateDateDropdown(selectedDate) {
