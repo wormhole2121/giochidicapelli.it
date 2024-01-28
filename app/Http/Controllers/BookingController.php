@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Jobs\SendAppointmentReminder;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
@@ -70,10 +71,9 @@ class BookingController extends Controller
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($dayOfWeek == 6) { // Sabato
             $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
-            $afternoon = range(14 * 60, 19 * 60, 25); // Finisce alle 19:00
+            $afternoon = range(14 * 60, 1115, 25); // Ultimo appuntamento inizia alle 18:35 e finisce alle 18:55
             $timeslots = array_merge($morning, $afternoon);
         }
-
 
 
         // Converti i minuti in orari e rimuovi quelli prenotati
@@ -110,7 +110,7 @@ class BookingController extends Controller
             'phone' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'haircut_types' => 'required|array',
-            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade(Sfumatura),Taglio shampoo e modellatura,Taglio Children,Modellatura barba',
+            'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade(Sfumatura),Taglio Children,Modellatura barba',
 
         ]);
 
