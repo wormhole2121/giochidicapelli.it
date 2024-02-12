@@ -47,6 +47,16 @@ function generateDays() {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
+    // Ottiene la data corrente per il confronto
+    const currentDate = new Date();
+    const currentMonthNow = currentDate.getMonth();
+    const currentYearNow = currentDate.getFullYear();
+
+    // Determina se il mese visualizzato è precedente al mese corrente
+    const isPastMonth = currentYear < currentYearNow || (currentYear === currentYearNow && currentMonth < currentMonthNow);
+    // Controlla se il mese visualizzato è il mese corrente
+    const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
+
     let startingDay = firstDayOfMonth.getDay();
     for (let i = 0; i < startingDay; i++) {
         const emptyDateElement = document.createElement("div");
@@ -56,26 +66,30 @@ function generateDays() {
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
-        const dayOfWeek = date.getDay();
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
         dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
 
         const spanElement = document.createElement("span");
-        spanElement.classList.add("day");
         spanElement.textContent = i;
+        dateElement.appendChild(spanElement);
 
-        if (dayOfWeek !== 0 && dayOfWeek !== 1) {
-            // Solo i giorni che non sono domenica (0) o lunedì (1) sono selezionabili
-            dateElement.addEventListener("click", () => {
-                window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-            });
-        } else {
-            // Applica una classe CSS per giorni non selezionabili (ad esempio, 'non-selectable')
+        if (isPastMonth || (isCurrentMonth && (i === 28 || i === 29))) {
+            // Rende non selezionabili tutti i giorni se il mese è precedente al corrente
+            // o se è il mese corrente e il giorno è il 27 o il 28
             dateElement.classList.add("non-selectable");
+        } else {
+            // Applica la logica esistente per rendere selezionabili alcuni giorni
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 1) {
+                dateElement.addEventListener("click", () => {
+                    window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                });
+            } else {
+                dateElement.classList.add("non-selectable");
+            }
         }
 
-        dateElement.appendChild(spanElement);
         datesContainer.appendChild(dateElement);
 
         if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
@@ -145,3 +159,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
+
+
+
+
+
+
+// function generateDays() {
+//     const datesContainer = document.getElementById("dates");
+//     datesContainer.innerHTML = '';
+
+//     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+//     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+
+//     let startingDay = firstDayOfMonth.getDay();
+//     for (let i = 0; i < startingDay; i++) {
+//         const emptyDateElement = document.createElement("div");
+//         emptyDateElement.classList.add("date", "out-of-month");
+//         datesContainer.appendChild(emptyDateElement);
+//     }
+
+//     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+//         const date = new Date(currentYear, currentMonth, i);
+//         const dayOfWeek = date.getDay();
+//         const dateElement = document.createElement("div");
+//         dateElement.classList.add("date");
+//         dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
+
+//         const spanElement = document.createElement("span");
+//         spanElement.classList.add("day");
+//         spanElement.textContent = i;
+
+//         if (dayOfWeek !== 0 && dayOfWeek !== 1) {
+//             // Solo i giorni che non sono domenica (0) o lunedì (1) sono selezionabili
+//             dateElement.addEventListener("click", () => {
+//                 window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+//             });
+//         } else {
+//             // Applica una classe CSS per giorni non selezionabili (ad esempio, 'non-selectable')
+//             dateElement.classList.add("non-selectable");
+//         }
+
+//         dateElement.appendChild(spanElement);
+//         datesContainer.appendChild(dateElement);
+
+//         if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
+//             dateElement.classList.add('active');
+//         }
+//     }
+// }
