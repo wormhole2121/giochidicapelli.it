@@ -69,14 +69,13 @@ function generateDays() {
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
         dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
-
+    
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
-
-        if (isPastMonth || (isCurrentMonth && (i === 28 || i === 29))) {
+    
+        if (isPastMonth) {
             // Rende non selezionabili tutti i giorni se il mese è precedente al corrente
-            // o se è il mese corrente e il giorno è il 27 o il 28
             dateElement.classList.add("non-selectable");
         } else {
             // Applica la logica esistente per rendere selezionabili alcuni giorni
@@ -89,9 +88,9 @@ function generateDays() {
                 dateElement.classList.add("non-selectable");
             }
         }
-
+    
         datesContainer.appendChild(dateElement);
-
+    
         if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
             dateElement.classList.add('active');
         }
