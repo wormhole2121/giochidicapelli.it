@@ -74,8 +74,8 @@ function generateDays() {
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
     
-        if (isPastMonth) {
-            // Rende non selezionabili tutti i giorni se il mese è precedente al corrente
+        // Controlla se il giorno è nel mese precedente, prima della data corrente, o è il 25 aprile o il 1 maggio
+        if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || (currentMonth === 3 && i === 25) || (currentMonth === 4 && i === 1)) {
             dateElement.classList.add("non-selectable");
         } else {
             // Applica la logica esistente per rendere selezionabili alcuni giorni
@@ -95,6 +95,8 @@ function generateDays() {
             dateElement.classList.add('active');
         }
     }
+    
+    
 }
 
 function updateDateDropdown(selectedDate) {
@@ -158,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
 
 
 
