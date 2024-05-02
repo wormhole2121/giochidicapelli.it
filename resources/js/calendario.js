@@ -47,14 +47,11 @@ function generateDays() {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
-    // Ottiene la data corrente per il confronto
     const currentDate = new Date();
     const currentMonthNow = currentDate.getMonth();
     const currentYearNow = currentDate.getFullYear();
 
-    // Determina se il mese visualizzato è precedente al mese corrente
     const isPastMonth = currentYear < currentYearNow || (currentYear === currentYearNow && currentMonth < currentMonthNow);
-    // Controlla se il mese visualizzato è il mese corrente
     const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
 
     let startingDay = firstDayOfMonth.getDay();
@@ -63,6 +60,12 @@ function generateDays() {
         emptyDateElement.classList.add("date", "out-of-month");
         datesContainer.appendChild(emptyDateElement);
     }
+
+    const nonBookableDates = {
+        5: [13, 14, 15], // Giugno
+        6: [2, 3, 4, 5, 6, 7, 8, 9, 10], // Luglio
+        7: [13, 14, 15, 16, 17] // Agosto
+    };
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
@@ -73,12 +76,11 @@ function generateDays() {
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
-    
-        // Controlla se il giorno è nel mese precedente, prima della data corrente, o è il 25 aprile o il 1 maggio
-        if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || (currentMonth === 3 && i === 25) || (currentMonth === 4 && i === 1)) {
+
+        const isNonBookable = currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i);
+        if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || isNonBookable) {
             dateElement.classList.add("non-selectable");
         } else {
-            // Applica la logica esistente per rendere selezionabili alcuni giorni
             const dayOfWeek = date.getDay();
             if (dayOfWeek !== 0 && dayOfWeek !== 1) {
                 dateElement.addEventListener("click", () => {
@@ -95,8 +97,6 @@ function generateDays() {
             dateElement.classList.add('active');
         }
     }
-    
-    
 }
 
 function updateDateDropdown(selectedDate) {
