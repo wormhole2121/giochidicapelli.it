@@ -3,7 +3,6 @@
         <div class="container booking-container">
             <h2 class="text-center booking-header">Calendario delle Prenotazioni</h2>
 
-            <!-- Sezione per i messaggi di errore e successo -->
             <div class="feedback-section">
                 @if (session('error'))
                     <div class="alert alert-danger">
@@ -17,11 +16,15 @@
                     </div>
                 @endif
 
-
+                <!-- Mostra un messaggio se la data selezionata è completamente prenotata -->
+                @if ($isFullyBooked)
+                    <div class="alert alert-danger">
+                        Non ci sono più disponibilità per la data selezionata: {{ \Carbon\Carbon::parse($selectedDate)->format('d/m/Y') }}.
+                    </div>
+                @endif
             </div>
 
             <div class="row booking-content">
-                <!-- Form per selezionare la data -->
                 <div class="col-md-6 col-sm-12 datepicker-section">
                     <div class="calendar-wrapper">
                         <div class="header month-selector">
@@ -38,18 +41,10 @@
                             <div class="day">Ven</div>
                             <div class="day">Sab</div>
                         </div>
-                        <div class="dates days-display" id="dates">
-                            @foreach ($availableDates as $date)
-                                <div class="date">
-                                    <span data-booking-date="{{ $date }}"
-                                        class="day">{{ \Carbon\Carbon::parse($date)->format('d') }}</span>
-                                </div>
-                            @endforeach
-                        </div>
+                        <div class="dates days-display" id="dates"></div>
                     </div>
 
-                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET"
-                        style="display: none;">
+                    <form action="{{ route('calendario') }}" class="date-selection-form" method="GET" style="display: none;">
                         <div class="form-group date-picker-group">
                             <label for="date">Seleziona una data:</label>
                             <select name="date" id="date" class="form-control date-dropdown">
@@ -62,13 +57,10 @@
                         </div>
                         <button type="submit" class="btn btn-show-bookings">Mostra prenotazioni</button>
                     </form>
-
                 </div>
 
-                <!-- Modulo di Prenotazione -->
                 <div class="col-md-6 col-sm-12 reservation-section">
                     <div class="card reservation-card">
-
                         <div class="card-body reservation-body">
                             <h3 class="card-header reservation-header text-center t-white mb-2">Prenota un Appuntamento</h3>
                             <form action="{{ route('prenota') }}" class="reservation-form" method="POST">
@@ -85,8 +77,7 @@
                                 <div class="form-group">
                                     <p class="t-white">*Ogni taglio comprende lo shampoo*</p>
                                     <label for="haircut_types" class="t-white">Tipologia di Tagli:</label>
-                                    <select multiple name="haircut_types[]" id="haircut_types" class="form-control" multiple
-                                        required>
+                                    <select multiple name="haircut_types[]" id="haircut_types" class="form-control" multiple required>
                                         <option value="Taglio">Taglio</option>
                                         <option value="Taglio con modellatura barba">Taglio con modellatura barba</option>
                                         <option value="Taglio Razor fade(Sfumatura)">Taglio Razor fade (sfumatura)</option>
@@ -95,16 +86,12 @@
                                     </select>
                                 </div>
 
-
                                 <div class="form-group available-time-buttons t-white">
                                     <label>Seleziona un orario:</label>
                                     <div class="time-buttons-wrapper">
                                         @foreach ($availableTimes as $index => $hour)
-                                            <input type="radio" id="time-{{ $index }}" name="start_time"
-                                                value="{{ $hour }}" class="time-radio"
-                                                {{ old('start_time') == $hour ? 'checked' : '' }}>
-                                            <label for="time-{{ $index }}"
-                                                class="btn btn-outline-primary time-btn">{{ $hour }}</label>
+                                            <input type="radio" id="time-{{ $index }}" name="start_time" value="{{ $hour }}" class="time-radio" {{ old('start_time') == $hour ? 'checked' : '' }}>
+                                            <label for="time-{{ $index }}" class="btn btn-outline-primary time-btn">{{ $hour }}</label>
                                         @endforeach
                                     </div>
                                 </div>
@@ -115,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Visualizzazione delle prenotazioni -->
+
             @if ($selectedDate)
                 <ul class="list-group bookings-list my-3">
                     @foreach ($bookings as $booking)
@@ -134,15 +121,12 @@
                                 <strong>Tipologie di Taglio:</strong>
                                 {{ is_array(json_decode($booking->haircut_types, true)) ? implode(', ', json_decode($booking->haircut_types, true)) : $booking->haircut_types }}
 
-                                {{-- Logica per il pulsante di eliminazione, se necessario --}}
-                                <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form"
-                                    method="POST">
+                                <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                                     <button type="submit" class="btn delete-booking-btn mt-2">Elimina</button>
-                                    <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}"
-                                        class="btn btn-info mt-2">Mostra dettagli</a>
+                                    <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}" class="btn btn-info mt-2">Mostra dettagli</a>
                                 </form>
                             </li>
                         @endif
@@ -150,9 +134,12 @@
                 </ul>
             @endif
 
-
         </div>
-
     @endauth
 
+    <!-- Passa l'array PHP fullyBookedDates al JavaScript come JSON -->
+    <script>
+        const fullyBookedDates = @json($fullyBookedDates);
+    </script>
+    <script src="{{ asset('js/calendario.js') }}"></script>
 </x-layout>

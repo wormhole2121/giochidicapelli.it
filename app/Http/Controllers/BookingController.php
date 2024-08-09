@@ -16,87 +16,113 @@ class BookingController extends Controller
     {
         // Imposta la lingua di Carbon in italiano
         Carbon::setLocale('it');
-
-        // Recupera la data selezionata dalla richiesta
+    
         $selectedDate = $request->input('date');
-
-        // Seleziona le prenotazioni in base al ruolo dell'utente
+    
         if (Auth::check() && Auth::user()->is_admin) {
-            // L'amministratore può vedere tutte le prenotazioni
             $bookings = Booking::where('date', $selectedDate)->orderBy('start_time', 'asc')->get();
         } else {
-            // Gli utenti normali vedono solo le loro prenotazioni
             $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
         }
-
-        // Recupera tutti gli orari prenotati per la data selezionata
+    
         $bookedHours = Booking::where('date', $selectedDate)
             ->pluck('start_time')
             ->map(function ($time) {
                 return Carbon::parse($time)->format('H:i');
             });
-
-        // Recupera tutte le date già prenotate
+    
         $bookedDates = Booking::where('date', '>=', now())
             ->where('end_time', '>=', now())
             ->pluck('date')
             ->unique();
-
-        // Recupera tutte le date disponibili
-        $availableDates = [];
-        $startDate = Carbon::createFromFormat('Y-m-d', now()->format('Y-m-d'));
-        $endDate = Carbon::createFromFormat('Y-m-d', now()->addDays(14)->format('Y-m-d'));
-
+    
+        $fullyBookedDates = collect();
+    
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::now()->addMonths(6)->endOfMonth();
+    
         while ($startDate <= $endDate) {
             $date = $startDate->format('Y-m-d');
+            $dayOfWeek = Carbon::parse($date)->dayOfWeek;
+    
+            if ($startDate->isPast() || in_array($dayOfWeek, [0, 1])) {
+                $startDate->addDay();
+                continue;
+            }
+    
+            $timeslots = [];
+    
+            if ($dayOfWeek == 4) { // Giovedì
+                $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
+            } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
+                $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 19.4 * 60, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            } elseif ($dayOfWeek == 5) { // Venerdì
+                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 19.4 * 60, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            } elseif ($dayOfWeek == 6) { // Sabato
+                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 1115, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            }
+    
+            $bookedSlotsCount = Booking::where('date', $date)->count();
+    
+            if ($bookedSlotsCount >= count($timeslots)) {
+                $fullyBookedDates->push($date);
+            }
+    
             if (!$bookedDates->contains($date)) {
                 $availableDates[] = $date;
             }
+    
             $startDate->addDay();
         }
-
-        // Definisci gli orari di lavoro
-        $dayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
-        $timeslots = [];
-
-        if ($dayOfWeek == 4) { // Giovedì
-            $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
-        } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
-            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:30
-            $afternoon = range(14 * 60, 19.4 * 60, 25);
-            $timeslots = array_merge($morning, $afternoon);
-        } elseif ($dayOfWeek == 5) { // Venerdì
-            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
-            $afternoon = range(14 * 60, 19.4 * 60, 25);
-            $timeslots = array_merge($morning, $afternoon);
-        } elseif ($dayOfWeek == 6) { // Sabato
-            $morning = range(8 * 60, 12.25 * 60 - 25, 25); // Inizia alle 08:00
-            $afternoon = range(14 * 60, 1115, 25); // Ultimo appuntamento inizia alle 18:35 e finisce alle 18:55
-            $timeslots = array_merge($morning, $afternoon);
+    
+        $availableTimes = [];
+        if ($selectedDate) {
+            $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
+    
+            if ($selectedDayOfWeek == 4) {
+                $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
+            } elseif (in_array($selectedDayOfWeek, [2, 3])) {
+                $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 19.4 * 60, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            } elseif ($selectedDayOfWeek == 5) {
+                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 19.4 * 60, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            } elseif ($selectedDayOfWeek == 6) {
+                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+                $afternoon = range(14 * 60, 1115, 25);
+                $timeslots = array_merge($morning, $afternoon);
+            }
+    
+            $availableTimes = collect($timeslots)->map(function ($minutes) {
+                $hours = floor($minutes / 60);
+                $mins = $minutes % 60;
+                return sprintf('%02d:%02d', $hours, $mins);
+            })->reject(function ($time) use ($bookedHours) {
+                return in_array($time, $bookedHours->toArray());
+            })->values()->toArray();
         }
-
-
-        // Converti i minuti in orari e rimuovi quelli prenotati
-        $availableTimes = collect($timeslots)->map(function ($minutes) {
-            $hours = floor($minutes / 60);
-            $mins = $minutes % 60;
-            return sprintf('%02d:%02d', $hours, $mins);
-        })->reject(function ($time) use ($bookedHours) {
-            return in_array($time, $bookedHours->toArray());
-        })->values()->toArray();
-
-        // Verifica se l'utente autenticato ha già prenotato per la data selezionata
+    
         $userBookings = [];
         if (Auth::check()) {
             $userBookings = Booking::where('user_id', Auth::id())
                 ->where('date', $selectedDate)
                 ->get();
         }
-
+    
         $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
-
-        return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes'));
+        $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
+    
+        return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes', 'fullyBookedDates', 'isFullyBooked'));
     }
+    
 
 
 

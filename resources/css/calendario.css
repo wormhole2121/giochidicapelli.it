@@ -255,7 +255,9 @@
     color: white;
 }
 
+
 .fully-booked {
-    background-color: red;
-    color: white;
+    color: red !important;
+    font-weight: bold;
 }
+

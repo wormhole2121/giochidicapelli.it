@@ -36,8 +36,10 @@ document.getElementById("nextMonth").addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded event triggered"); // Debugging
     updateCurrentMonth();
     generateDays();
+    applyFullyBookedStyles(); // Applica la classe fully-booked quando il DOM è pronto
 });
 
 function generateDays() {
@@ -71,8 +73,8 @@ function generateDays() {
         const date = new Date(currentYear, currentMonth, i);
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
-        dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
-    
+        dateElement.setAttribute('data-date', `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
+
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
@@ -90,20 +92,39 @@ function generateDays() {
                 dateElement.classList.add("non-selectable");
             }
         }
-    
+
         datesContainer.appendChild(dateElement);
-    
+
         if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
             dateElement.classList.add('active');
         }
     }
+
+    // Dopo aver generato i giorni, applica la classe fully-booked
+    applyFullyBookedStyles();
+}
+
+function applyFullyBookedStyles() {
+    console.log("applyFullyBookedStyles function called");
+    console.log("fullyBookedDates array:", fullyBookedDates); // Debugging
+
+    document.querySelectorAll('.date span').forEach(function(spanElement) {
+        const date = spanElement.parentElement.getAttribute('data-date').trim();
+        console.log(`Checking date: ${date}`); // Mostra la data formattata
+
+        if (fullyBookedDates.includes(date)) {
+            console.log(`Date ${date} is fully booked.`);
+            spanElement.classList.add('fully-booked');
+        } else {
+            console.log(`Date ${date} is NOT fully booked.`);
+        }
+    });
 }
 
 function updateDateDropdown(selectedDate) {
     const dropdown = document.querySelector(".date-dropdown");
     let optionExists = false;
 
-    // Verifica se l'opzione esiste già
     dropdown.querySelectorAll("option").forEach(option => {
         if (option.value === selectedDate) {
             option.selected = true;
@@ -113,7 +134,6 @@ function updateDateDropdown(selectedDate) {
         }
     });
 
-    // Se l'opzione non esiste, la crea e la seleziona
     if (!optionExists) {
         const optionElement = document.createElement("option");
         optionElement.value = selectedDate;
@@ -136,30 +156,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     timeButtons.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            // Deseleziona tutti gli altri bottoni
             timeButtons.forEach(function(innerBtn) {
                 innerBtn.classList.remove('btn-primary');
                 innerBtn.classList.add('btn-outline-primary');
             });
 
-            // Seleziona il bottone cliccato
             btn.classList.remove('btn-outline-primary');
             btn.classList.add('btn-primary');
 
-            // Imposta l'orario selezionato nell'input nascosto
             selectedTimeInput.value = btn.getAttribute('data-time');
         });
     });
 
-    // Controlla se c'è un orario già selezionato e seleziona il bottone corrispondente
     if (selectedTimeInput.value) {
         let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
         if (selectedButton) {
             selectedButton.click(); // Simula un clic sul bottone per selezionarlo
         }
     }
-
 });
+
 
 
 
