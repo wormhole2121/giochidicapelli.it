@@ -123,6 +123,7 @@ class BookingController extends Controller
         return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes', 'fullyBookedDates', 'isFullyBooked'));
     }
     
+    
 
 
 
