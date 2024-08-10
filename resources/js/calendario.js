@@ -50,6 +50,7 @@ function generateDays() {
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
     const currentDate = new Date();
+    const currentDay = currentDate.getDate();
     const currentMonthNow = currentDate.getMonth();
     const currentYearNow = currentDate.getFullYear();
 
@@ -63,26 +64,34 @@ function generateDays() {
         datesContainer.appendChild(emptyDateElement);
     }
 
+    // Definisci le date non selezionabili
+    const nonSelectableDates = ["2024-09-06", "2024-09-07"];
+
     const nonBookableDates = {
         5: [13, 14, 15], // Giugno
         6: [2, 3, 4, 5, 6, 7, 8, 9, 10], // Luglio
-        7: [13, 14, 15, 16, 17], // Agosto
-        8: [6, 7] //settembre
+        7: [13, 14, 15, 16, 17] // Agosto
     };
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
+        const dateString = date.toISOString().split('T')[0]; // Formatta la data come YYYY-MM-DD
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
-        dateElement.setAttribute('data-date', `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
+        dateElement.setAttribute('data-date', dateString);
 
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
-        const isNonBookable = currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i);
+        const isNonBookable = (currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i)) || nonSelectableDates.includes(dateString);
+        
+        // Controlla se il giorno è completamente prenotato o non selezionabile
         if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || isNonBookable) {
             dateElement.classList.add("non-selectable");
+        } else if (fullyBookedDates.includes(dateString)) {
+            dateElement.classList.add("fully-booked");
+            dateElement.classList.add("non-selectable"); // Rende non selezionabile anche se è completamente prenotato
         } else {
             const dayOfWeek = date.getDay();
             if (dayOfWeek !== 0 && dayOfWeek !== 1) {
