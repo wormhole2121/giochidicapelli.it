@@ -12,117 +12,117 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    public function index(Request $request)
-    {
-        // Imposta la lingua di Carbon in italiano
-        Carbon::setLocale('it');
-    
-        $selectedDate = $request->input('date');
-    
-        if (Auth::check() && Auth::user()->is_admin) {
-            $bookings = Booking::where('date', $selectedDate)->orderBy('start_time', 'asc')->get();
-        } else {
-            $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
-        }
-    
-        $bookedHours = Booking::where('date', $selectedDate)
-            ->pluck('start_time')
-            ->map(function ($time) {
-                return Carbon::parse($time)->format('H:i');
-            });
-    
-        $bookedDates = Booking::where('date', '>=', now())
-            ->where('end_time', '>=', now())
-            ->pluck('date')
-            ->unique();
-    
-        $fullyBookedDates = collect();
-    
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->addMonths(6)->endOfMonth();
-    
-        while ($startDate <= $endDate) {
-            $date = $startDate->format('Y-m-d');
-            $dayOfWeek = Carbon::parse($date)->dayOfWeek;
-    
-            if ($startDate->isPast() || in_array($dayOfWeek, [0, 1])) {
-                $startDate->addDay();
-                continue;
-            }
-    
-            $timeslots = [];
-    
-            if ($dayOfWeek == 4) { // Giovedì
-                $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
-            } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
-                $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 5) { // Venerdì
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 6) { // Sabato
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 1115, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            }
-    
-            $bookedSlotsCount = Booking::where('date', $date)->count();
-    
-            if ($bookedSlotsCount >= count($timeslots)) {
-                $fullyBookedDates->push($date);
-            }
-    
-            if (!$bookedDates->contains($date)) {
-                $availableDates[] = $date;
-            }
-    
-            $startDate->addDay();
-        }
-    
-        $availableTimes = [];
-        if ($selectedDate) {
-            $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
-    
-            if ($selectedDayOfWeek == 4) {
-                $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
-            } elseif (in_array($selectedDayOfWeek, [2, 3])) {
-                $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 5) {
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 6) {
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 1115, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            }
-    
-            $availableTimes = collect($timeslots)->map(function ($minutes) {
-                $hours = floor($minutes / 60);
-                $mins = $minutes % 60;
-                return sprintf('%02d:%02d', $hours, $mins);
-            })->reject(function ($time) use ($bookedHours) {
-                return in_array($time, $bookedHours->toArray());
-            })->values()->toArray();
-        }
-    
-        $userBookings = [];
-        if (Auth::check()) {
-            $userBookings = Booking::where('user_id', Auth::id())
-                ->where('date', $selectedDate)
-                ->get();
-        }
-    
-        $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
-        $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
-    
-        return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes', 'fullyBookedDates', 'isFullyBooked'));
+// Assicurati di avere questo metodo nel tuo BookingController
+public function index(Request $request)
+{
+    Carbon::setLocale('it');
+
+    $selectedDate = $request->input('date');
+
+    if (Auth::check() && Auth::user()->is_admin) {
+        $bookings = Booking::where('date', $selectedDate)->orderBy('start_time', 'asc')->get();
+    } else {
+        $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
     }
-    
+
+    $bookedHours = Booking::where('date', $selectedDate)
+        ->pluck('start_time')
+        ->map(function ($time) {
+            return Carbon::parse($time)->format('H:i');
+        });
+
+    $bookedDates = Booking::where('date', '>=', now())
+        ->where('end_time', '>=', now())
+        ->pluck('date')
+        ->unique();
+
+    $fullyBookedDates = collect();
+
+    $startDate = Carbon::now()->startOfMonth();
+    $endDate = Carbon::now()->addMonths(6)->endOfMonth();
+
+    while ($startDate <= $endDate) {
+        $date = $startDate->format('Y-m-d');
+        $dayOfWeek = $startDate->dayOfWeek;
+
+        if (in_array($dayOfWeek, [0, 1])) {
+            $startDate->addDay();
+            continue;
+        }
+
+        $timeslots = [];
+
+        if ($dayOfWeek == 4) { // Giovedì
+            $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
+        } elseif (in_array($dayOfWeek, [2, 3])) { // Martedì, Mercoledì
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        } elseif ($dayOfWeek == 5) { // Venerdì
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        } elseif ($dayOfWeek == 6) { // Sabato
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 1115, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        }
+
+        $bookedSlotsCount = Booking::where('date', $date)->count();
+
+        if ($bookedSlotsCount >= count($timeslots)) {
+            $fullyBookedDates->push($date);
+        }
+
+        if (!$bookedDates->contains($date)) {
+            $availableDates[] = $date;
+        }
+
+        $startDate->addDay();
+    }
+
+    $availableTimes = [];
+    if ($selectedDate) {
+        $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
+
+        if ($selectedDayOfWeek == 4) {
+            $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
+        } elseif (in_array($selectedDayOfWeek, [2, 3])) {
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        } elseif ($selectedDayOfWeek == 5) {
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        } elseif ($selectedDayOfWeek == 6) {
+            $morning = range(8 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 1115, 25);
+            $timeslots = array_merge($morning, $afternoon);
+        }
+
+        $availableTimes = collect($timeslots)->map(function ($minutes) use ($bookedHours) {
+            $hours = floor($minutes / 60);
+            $mins = $minutes % 60;
+            return sprintf('%02d:%02d', $hours, $mins);
+        })->reject(function ($time) use ($bookedHours) {
+            return in_array($time, $bookedHours->toArray());
+        })->values()->toArray();
+    }
+
+    $userBookings = [];
+    if (Auth::check()) {
+        $userBookings = Booking::where('user_id', Auth::id())
+            ->where('date', $selectedDate)
+            ->get();
+    }
+
+    $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
+    $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
+
+    return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes', 'fullyBookedDates', 'isFullyBooked'));
+}
+
     
 
 

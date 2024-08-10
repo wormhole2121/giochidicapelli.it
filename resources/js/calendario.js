@@ -64,9 +64,8 @@ function generateDays() {
     }
 
     const nonBookableDates = {
-        5: [13, 14, 15], // Giugno
-        6: [2, 3, 4, 5, 6, 7, 8, 9, 10], // Luglio
-        7: [13, 14, 15, 16, 17] // Agosto
+        7: [13, 14, 15, 16, 17], // Agosto
+        8: [6, 7] //settembre
     };
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
@@ -178,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-//prova
+
 
 
 
