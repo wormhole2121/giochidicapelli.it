@@ -107,11 +107,16 @@ function applyFullyBookedStyles() {
     console.log("applyFullyBookedStyles function called");
     console.log("fullyBookedDates array:", fullyBookedDates); // Debugging
 
+    const currentDate = new Date(); // Ottieni la data corrente per il confronto
+
     document.querySelectorAll('.date span').forEach(function(spanElement) {
         const date = spanElement.parentElement.getAttribute('data-date').trim();
+        const dateToCompare = new Date(date);
+
         console.log(`Checking date: ${date}`); // Mostra la data formattata
 
-        if (fullyBookedDates.includes(date)) {
+        // Applica la classe fully-booked solo se la data è fully booked e non è precedente al giorno corrente
+        if (fullyBookedDates.includes(date) && dateToCompare >= currentDate.setHours(0, 0, 0, 0)) {
             console.log(`Date ${date} is fully booked.`);
             spanElement.classList.add('fully-booked');
         } else {
@@ -119,6 +124,7 @@ function applyFullyBookedStyles() {
         }
     });
 }
+
 
 function updateDateDropdown(selectedDate) {
     const dropdown = document.querySelector(".date-dropdown");
