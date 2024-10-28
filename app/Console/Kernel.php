@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:send-sms-reminders')->hourly();
-       
+        $schedule->command('bookings:delete-past')->daily();
     }
 
     /**

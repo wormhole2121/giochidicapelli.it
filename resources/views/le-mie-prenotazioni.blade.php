@@ -2,8 +2,7 @@
     <a href="{{ route('calendario') }}">
         <i class="fa-solid fa-arrow-left fa-2x ms-2 mt-2" style="color: black;"></i>
     </a>
-    <h2 class="text-center mb-4 custom-title" style="font-size: 35px; color:black; margin-right:30px">Le mie Prenotazioni
-    </h2>
+    <h2 class="text-center mb-4 custom-title" style="font-size: 35px; color:black; margin-right:30px">Le mie Prenotazioni</h2>
     <div class="container">
         <!-- Sezione per i messaggi di errore e successo -->
         @if (session('error'))
@@ -30,7 +29,12 @@
                         }, 3000);
                     </script>
                 @else
-                    @foreach ($userBookings->groupBy('date') as $date => $bookings)
+                    <!-- Ordinare le prenotazioni per data crescente -->
+                    @php
+                        $sortedBookings = $userBookings->sortBy('date');
+                    @endphp
+
+                    @foreach ($sortedBookings->groupBy('date') as $date => $bookings)
                         <h3 class="custom-title-2" style="color: black;">
                             {{ \Carbon\Carbon::parse($date)->isoFormat('dddd D MMMM YYYY') }}</h3>
                         <ul class="list-group">
