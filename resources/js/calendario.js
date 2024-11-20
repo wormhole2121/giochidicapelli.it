@@ -66,7 +66,9 @@ function generateDays() {
     const nonBookableDates = {
         7: [13, 14, 15, 16, 17], // Agosto
         8: [6, 7], // Settembre
-        10: [1, 2] // Novembre
+        10: [1, 2], // Novembre
+        11: [25,26,31],//Dicembre
+        0: [1,2]//Gennaio
     };
     
 
@@ -80,7 +82,9 @@ function generateDays() {
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
-        const isNonBookable = currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i);
+        const isNonBookable =
+        (currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i)) ||
+        (currentYear === 2025 && currentMonth === 0 && nonBookableDates[0] && nonBookableDates[0].includes(i));
         if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || isNonBookable) {
             dateElement.classList.add("non-selectable");
         } else {
