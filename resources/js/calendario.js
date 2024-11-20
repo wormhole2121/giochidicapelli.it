@@ -56,6 +56,12 @@ function generateDays() {
     const isPastMonth = currentYear < currentYearNow || (currentYear === currentYearNow && currentMonth < currentMonthNow);
     const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
 
+    const alwaysSelectableDates = [
+        "2024-12-23",
+        "2024-12-29",
+        "2024-12-30"
+    ];
+
     let startingDay = firstDayOfMonth.getDay();
     for (let i = 0; i < startingDay; i++) {
         const emptyDateElement = document.createElement("div");
@@ -67,33 +73,36 @@ function generateDays() {
         7: [13, 14, 15, 16, 17], // Agosto
         8: [6, 7], // Settembre
         10: [1, 2], // Novembre
-        11: [25,26,31],//Dicembre
-        0: [1,2]//Gennaio
+        11: [25, 26, 31], // Dicembre
+        0: [1, 2] // Gennaio 2025
     };
-    
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
+        const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
-        dateElement.setAttribute('data-date', `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
+        dateElement.setAttribute('data-date', formattedDate);
 
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
+        // Controlla se la data è non selezionabile
         const isNonBookable =
-        (currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i)) ||
-        (currentYear === 2025 && currentMonth === 0 && nonBookableDates[0] && nonBookableDates[0].includes(i));
+            ((currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i)) ||
+            (currentYear === 2025 && currentMonth === 0 && nonBookableDates[0] && nonBookableDates[0].includes(i))) &&
+            !alwaysSelectableDates.includes(formattedDate);
+
         if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || isNonBookable) {
             dateElement.classList.add("non-selectable");
         } else {
             const dayOfWeek = date.getDay();
             if (dayOfWeek !== 0 && dayOfWeek !== 1) {
                 dateElement.addEventListener("click", () => {
-                    window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                    window.location.search = `?date=${formattedDate}`;
                 });
-            } else {
+            } else if (!alwaysSelectableDates.includes(formattedDate)) {
                 dateElement.classList.add("non-selectable");
             }
         }
