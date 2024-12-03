@@ -36,10 +36,8 @@ document.getElementById("nextMonth").addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-    console.log("DOMContentLoaded event triggered"); // Debugging
     updateCurrentMonth();
     generateDays();
-    applyFullyBookedStyles(); // Applica la classe fully-booked quando il DOM è pronto
 });
 
 function generateDays() {
@@ -50,24 +48,11 @@ function generateDays() {
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
     const currentDate = new Date();
-    const currentMonthNow = currentDate.getMonth();
-    const currentYearNow = currentDate.getFullYear();
-
-    const isPastMonth = currentYear < currentYearNow || (currentYear === currentYearNow && currentMonth < currentMonthNow);
-    const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
-
     const alwaysSelectableDates = [
         "2024-12-23",
         "2024-12-29",
         "2024-12-30"
     ];
-
-    let startingDay = firstDayOfMonth.getDay();
-    for (let i = 0; i < startingDay; i++) {
-        const emptyDateElement = document.createElement("div");
-        emptyDateElement.classList.add("date", "out-of-month");
-        datesContainer.appendChild(emptyDateElement);
-    }
 
     const nonBookableDates = {
         7: [13, 14, 15, 16, 17], // Agosto
@@ -76,6 +61,13 @@ function generateDays() {
         11: [25, 26, 31], // Dicembre
         0: [1, 2] // Gennaio 2025
     };
+
+    let startingDay = firstDayOfMonth.getDay();
+    for (let i = 0; i < startingDay; i++) {
+        const emptyDateElement = document.createElement("div");
+        emptyDateElement.classList.add("date", "out-of-month");
+        datesContainer.appendChild(emptyDateElement);
+    }
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
@@ -88,95 +80,75 @@ function generateDays() {
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
-        // Controlla se la data è non selezionabile
+        const isPastDate = date < currentDate.setHours(0, 0, 0, 0);
+
         const isNonBookable =
-            ((currentYear === 2024 && nonBookableDates[currentMonth] && nonBookableDates[currentMonth].includes(i)) ||
-            (currentYear === 2025 && currentMonth === 0 && nonBookableDates[0] && nonBookableDates[0].includes(i))) &&
+            nonBookableDates[currentMonth] &&
+            nonBookableDates[currentMonth].includes(i) &&
             !alwaysSelectableDates.includes(formattedDate);
 
-        if (isPastMonth || (isCurrentMonth && i < currentDate.getDate()) || isNonBookable) {
+        if (isPastDate || isNonBookable) {
             dateElement.classList.add("non-selectable");
-        } else {
+        } else if (!alwaysSelectableDates.includes(formattedDate)) {
             const dayOfWeek = date.getDay();
-            if (dayOfWeek !== 0 && dayOfWeek !== 1) {
+            if (dayOfWeek === 0 || dayOfWeek === 1) {
+                dateElement.classList.add("non-selectable");
+            } else {
                 dateElement.addEventListener("click", () => {
                     window.location.search = `?date=${formattedDate}`;
                 });
-            } else if (!alwaysSelectableDates.includes(formattedDate)) {
-                dateElement.classList.add("non-selectable");
             }
+        } else {
+            dateElement.addEventListener("click", () => {
+                window.location.search = `?date=${formattedDate}`;
+            });
         }
 
         datesContainer.appendChild(dateElement);
 
-        if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
+        if (selectedDate && formattedDate === selectedDate.toISOString().split('T')[0]) {
             dateElement.classList.add('active');
         }
     }
 
-    // Dopo aver generato i giorni, applica la classe fully-booked
     applyFullyBookedStyles();
 }
 
 function applyFullyBookedStyles() {
-    console.log("applyFullyBookedStyles function called");
-    console.log("fullyBookedDates array:", fullyBookedDates); // Debugging
+    const fullyBookedDates = [
+        // Queste date devono essere passate dal backend
+    ];
 
-    const currentDate = new Date(); // Ottieni la data corrente per il confronto
+    const alwaysSelectableDates = [
+        "2024-12-23",
+        "2024-12-29",
+        "2024-12-30"
+    ];
 
-    document.querySelectorAll('.date span').forEach(function(spanElement) {
+    document.querySelectorAll('.date span').forEach(function (spanElement) {
         const date = spanElement.parentElement.getAttribute('data-date').trim();
-        const dateToCompare = new Date(date);
 
-        console.log(`Checking date: ${date}`); // Mostra la data formattata
-
-        // Applica la classe fully-booked solo se la data è fully booked e non è precedente al giorno corrente
-        if (fullyBookedDates.includes(date) && dateToCompare >= currentDate.setHours(0, 0, 0, 0)) {
-            console.log(`Date ${date} is fully booked.`);
+        if (fullyBookedDates.includes(date)) {
             spanElement.classList.add('fully-booked');
-        } else {
-            console.log(`Date ${date} is NOT fully booked.`);
+        } else if (alwaysSelectableDates.includes(date)) {
+            spanElement.classList.remove('fully-booked');
         }
     });
 }
 
-
-function updateDateDropdown(selectedDate) {
-    const dropdown = document.querySelector(".date-dropdown");
-    let optionExists = false;
-
-    dropdown.querySelectorAll("option").forEach(option => {
-        if (option.value === selectedDate) {
-            option.selected = true;
-            optionExists = true;
-        } else {
-            option.selected = false;
-        }
-    });
-
-    if (!optionExists) {
-        const optionElement = document.createElement("option");
-        optionElement.value = selectedDate;
-        optionElement.selected = true;
-        optionElement.textContent = selectedDate;
-
-        dropdown.appendChild(optionElement);
-    }
-}
-
-$(document).ready(function() {
+$(document).ready(function () {
     $("#haircut_types").select2({
         width: 'resolve'
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     let timeButtons = document.querySelectorAll('.time-btn');
     let selectedTimeInput = document.getElementById('selectedTime');
 
-    timeButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            timeButtons.forEach(function(innerBtn) {
+    timeButtons.forEach((btn) => {
+        btn.addEventListener('click', function () {
+            timeButtons.forEach((innerBtn) => {
                 innerBtn.classList.remove('btn-primary');
                 innerBtn.classList.add('btn-outline-primary');
             });
@@ -195,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
 
 
 
