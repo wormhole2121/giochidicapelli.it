@@ -42,7 +42,6 @@ public function index(Request $request)
         ->unique();
 
     $fullyBookedDates = collect();
-
     $startDate = Carbon::now()->startOfMonth();
     $endDate = Carbon::now()->addMonths(6)->endOfMonth();
     $availableDates = [];
@@ -52,11 +51,9 @@ public function index(Request $request)
         $dayOfWeek = $startDate->dayOfWeek;
 
         $timeslots = [];
-
         if (in_array($date, $alwaysSelectableDates)) {
-            // Usa gli orari del mercoledì per le alwaysSelectableDates
-            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // 08:30 - 12:00
-            $afternoon = range(14 * 60, 19.4 * 60, 25);      // 14:00 - 19:15
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($dayOfWeek == 4) { // Giovedì
             $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
@@ -93,9 +90,8 @@ public function index(Request $request)
         $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
 
         if (in_array($formattedDate, $alwaysSelectableDates)) {
-            // Orari del mercoledì per le alwaysSelectableDates
-            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25); // 08:30 - 12:00
-            $afternoon = range(14 * 60, 19.4 * 60, 25);      // 14:00 - 19:15
+            $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
+            $afternoon = range(14 * 60, 19.4 * 60, 25);
             $timeslots = array_merge($morning, $afternoon);
         } elseif ($selectedDayOfWeek == 4) {
             $timeslots = range(14 * 60, 21.25 * 60 - 25, 25);
@@ -122,17 +118,17 @@ public function index(Request $request)
         })->values()->toArray();
     }
 
-    $userBookings = [];
-    if (Auth::check()) {
-        $userBookings = Booking::where('user_id', Auth::id())
-            ->where('date', $selectedDate)
-            ->get();
-    }
-
-    $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
+    // Aggiungi $isFullyBooked basato sulla data selezionata
     $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
 
-    return view('calendario', compact('selectedDate', 'availableDates', 'bookings', 'isDateBooked', 'userBookings', 'availableTimes', 'fullyBookedDates', 'isFullyBooked'));
+    return view('calendario', compact(
+        'selectedDate',
+        'availableDates',
+        'bookings',
+        'fullyBookedDates',
+        'availableTimes',
+        'isFullyBooked'
+    ));
 }
 
 
