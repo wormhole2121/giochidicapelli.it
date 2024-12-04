@@ -55,11 +55,11 @@ function generateDays() {
     ];
 
     const nonBookableDates = {
-        7: [13, 14, 15, 16, 17],
-        8: [6, 7],
-        10: [1, 2],
-        11: [25, 26, 31],
-        0: [1, 2]
+        7: [13, 14, 15, 16, 17], // Agosto
+        8: [6, 7], // Settembre
+        10: [1, 2], // Novembre
+        11: [25, 26, 31], // Dicembre
+        0: [1, 2, 3, 4] // Gennaio 2025
     };
 
     let startingDay = firstDayOfMonth.getDay();
@@ -81,6 +81,7 @@ function generateDays() {
         dateElement.appendChild(spanElement);
 
         const isPastDate = date < currentDate.setHours(0, 0, 0, 0);
+
         const isNonBookable =
             nonBookableDates[currentMonth] &&
             nonBookableDates[currentMonth].includes(i) &&
@@ -114,13 +115,23 @@ function generateDays() {
 }
 
 function applyFullyBookedStyles() {
-    const fullyBookedDates = window.fullyBookedDates || [];
+    const fullyBookedDates = [
+        // Queste date devono essere passate dal backend
+    ];
+
+    const alwaysSelectableDates = [
+        "2024-12-23",
+        "2024-12-29",
+        "2024-12-30"
+    ];
 
     document.querySelectorAll('.date span').forEach(function (spanElement) {
         const date = spanElement.parentElement.getAttribute('data-date').trim();
 
         if (fullyBookedDates.includes(date)) {
             spanElement.classList.add('fully-booked');
+        } else if (alwaysSelectableDates.includes(date)) {
+            spanElement.classList.remove('fully-booked');
         }
     });
 }
@@ -152,12 +163,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (selectedTimeInput.value) {
         let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
         if (selectedButton) {
-            selectedButton.click();
+            selectedButton.click(); // Simula un clic sul bottone per selezionarlo
         }
     }
 });
-
-
 
 
 
