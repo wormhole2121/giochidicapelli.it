@@ -94,14 +94,24 @@ function generateDays() {
             if (dayOfWeek === 0 || dayOfWeek === 1) {
                 dateElement.classList.add("non-selectable");
             } else {
+                // Selezionabili: aggiungi il listener e controlla se sono fully booked
+                if (fullyBookedDates.includes(formattedDate)) {
+                    dateElement.classList.add("fully-booked");
+                } else {
+                    dateElement.addEventListener("click", () => {
+                        window.location.search = `?date=${formattedDate}`;
+                    });
+                }
+            }
+        } else {
+            // Sempre selezionabili: controlla se sono fully booked
+            if (fullyBookedDates.includes(formattedDate)) {
+                dateElement.classList.add("fully-booked");
+            } else {
                 dateElement.addEventListener("click", () => {
                     window.location.search = `?date=${formattedDate}`;
                 });
             }
-        } else {
-            dateElement.addEventListener("click", () => {
-                window.location.search = `?date=${formattedDate}`;
-            });
         }
 
         datesContainer.appendChild(dateElement);
@@ -110,9 +120,9 @@ function generateDays() {
             dateElement.classList.add('active');
         }
     }
-
-    applyFullyBookedStyles();
 }
+
+
 
 function applyFullyBookedStyles() {
     const fullyBookedDates = [
