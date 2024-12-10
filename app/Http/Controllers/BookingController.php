@@ -62,13 +62,9 @@ class BookingController extends Controller
                 $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
                 $afternoon = range(14 * 60, 19.4 * 60, 25);
                 $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 5) { // Venerdì
+            } elseif ($dayOfWeek == 5 || $dayOfWeek == 6) { // Venerdì e Sabato
                 $morning = range(8 * 60, 12.25 * 60 - 25, 25);
                 $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 6) { // Sabato
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 18.6 * 60, 25); // Fino alle 18:35
                 $timeslots = array_merge($morning, $afternoon);
             }
 
@@ -100,13 +96,9 @@ class BookingController extends Controller
                 $morning = range(8.5 * 60, 12.25 * 60 - 25, 25);
                 $afternoon = range(14 * 60, 19.4 * 60, 25);
                 $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 5) {
+            } elseif ($selectedDayOfWeek == 5 || $selectedDayOfWeek == 6) {
                 $morning = range(8 * 60, 12.25 * 60 - 25, 25);
                 $afternoon = range(14 * 60, 19.4 * 60, 25);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 6) {
-                $morning = range(8 * 60, 12.25 * 60 - 25, 25);
-                $afternoon = range(14 * 60, 18.6 * 60, 25); // Fino alle 18:35
                 $timeslots = array_merge($morning, $afternoon);
             }
 
@@ -211,15 +203,13 @@ class BookingController extends Controller
             $validStartMorning = Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 08:00');
             $validEndMorning = Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 12:00');
             $validStartAfternoon = Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 14:00');
-            $validEndAfternoon = ($dayOfWeek == 6) 
-                ? Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 18:35') // Sabato termina alle 18:35
-                : Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 19:15'); // Venerdì termina alle 19:15
+            $validEndAfternoon = Carbon::createFromFormat('Y-m-d H:i', $formattedDate . ' 19:15');
 
             if (
                 !$startTime->between($validStartMorning, $validEndMorning) &&
                 !$startTime->between($validStartAfternoon, $validEndAfternoon)
             ) {
-                return redirect()->route('calendario')->with('error', 'Gli orari di prenotazione validi sono dalle 08:00 alle 12:00 e dalle 14:00 alle ' . $validEndAfternoon->format('H:i') . ' per venerdì e sabato.');
+                return redirect()->route('calendario')->with('error', 'Gli orari di prenotazione validi sono dalle 08:00 alle 12:00 e dalle 14:00 alle 19:15 per venerdì e sabato.');
             }
         } else {
             // Validazione per gli altri giorni
@@ -291,4 +281,4 @@ class BookingController extends Controller
 
         return redirect()->route('le-mie-prenotazioni')->with('error', 'Non hai l\'autorizzazione per eliminare questo appuntamento.');
     }
-}
+} 
