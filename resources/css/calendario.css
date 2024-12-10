@@ -257,7 +257,7 @@
 
 
 .fully-booked {
-    color: red !important;
+    background-color: rgb(255, 0, 0) !important;
     font-weight: bold;
 }
 

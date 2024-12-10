@@ -97,11 +97,12 @@ function generateDays() {
                 // Selezionabili: aggiungi il listener e controlla se sono fully booked
                 if (fullyBookedDates.includes(formattedDate)) {
                     dateElement.classList.add("fully-booked");
-                } else {
-                    dateElement.addEventListener("click", () => {
-                        window.location.search = `?date=${formattedDate}`;
-                    });
                 }
+                // Rendi comunque selezionabili tutte le date, incluse le fully-booked
+                dateElement.addEventListener("click", () => {
+                    window.location.search = `?date=${formattedDate}`;
+                });
+                
             }
         } else {
             // Sempre selezionabili: controlla se sono fully booked
