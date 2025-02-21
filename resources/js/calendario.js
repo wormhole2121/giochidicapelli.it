@@ -59,7 +59,9 @@ function generateDays() {
         8: [6, 7], // Settembre
         10: [1, 2], // Novembre
         11: [25, 26, 31], // Dicembre
-        0: [1, 2, 3, 4] // Gennaio 2025
+        0: [1, 2, 3, 4], // Gennaio 2025
+        1: [25] // Febbraio 2025
+
     };
 
     let startingDay = firstDayOfMonth.getDay();
@@ -178,13 +180,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-
-
-
-
-
-
-
 
 
 
