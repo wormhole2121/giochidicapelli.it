@@ -60,7 +60,9 @@ function generateDays() {
         10: [1, 2], // Novembre
         11: [25, 26, 31], // Dicembre
         0: [1, 2, 3, 4], // Gennaio 2025
-        1: [25] // Febbraio 2025
+        1: [25], // Febbraio 2025
+        3: [24, 25, 26], // Aprile 2025
+        4: [1] // Maggio 2025
 
     };
 
