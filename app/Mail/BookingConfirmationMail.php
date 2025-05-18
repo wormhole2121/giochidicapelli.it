@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Mail;
+
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class BookingConfirmationMail extends Mailable implements ShouldQueue
@@ -14,6 +13,7 @@ class BookingConfirmationMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $booking;
+
     /**
      * Create a new message instance.
      */
@@ -22,41 +22,16 @@ class BookingConfirmationMail extends Mailable implements ShouldQueue
         $this->booking = $booking;
     }
 
+    /**
+     * Build the message.
+     */
     public function build()
     {
         return $this->subject('Conferma della tua prenotazione')
-        ->view('emails.booking-confirmation', [
-            'booking' => $this->booking,
-        ]);
-    }
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Booking Confirmation Mail',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.booking-confirmation',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+                    ->from('prenotazioni@giochidicapelli.it', 'Giochi di Capelli')
+                    ->view('emails.booking-confirmation')
+                    ->with([
+                        'booking' => $this->booking,
+                    ]);
     }
 }
