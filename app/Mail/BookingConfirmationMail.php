@@ -14,17 +14,11 @@ class BookingConfirmationMail extends Mailable implements ShouldQueue
 
     public $booking;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(Booking $booking)
+    public function __construct($bookingId)
     {
-        $this->booking = $booking;
+        $this->booking = Booking::find($bookingId);
     }
 
-    /**
-     * Build the message.
-     */
     public function build()
     {
         return $this->subject('Conferma della tua prenotazione')

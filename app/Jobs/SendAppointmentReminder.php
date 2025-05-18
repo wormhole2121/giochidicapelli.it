@@ -15,16 +15,22 @@ class SendAppointmentReminder implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $booking;
+    protected $bookingId;
 
-    public function __construct(Booking $booking)
+    public function __construct($bookingId)
     {
-        $this->booking = $booking;
+        $this->bookingId = $bookingId;
     }
 
     public function handle()
     {
-        Mail::to($this->booking->user->email)->send(new AppointmentReminderMail($this->booking));
+        $booking = Booking::with('user')->find($this->bookingId);
+
+        if ($booking && $booking->user) {
+            Mail::to($booking->user->email)->send(new AppointmentReminderMail($booking->id));
+
+        }
     }
 }
+
 
