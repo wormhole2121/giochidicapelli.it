@@ -253,7 +253,8 @@ class BookingController extends Controller
         if ($booking->save()) {
             $reminderTime = $startTime->copy()->subHours(4);
             SendAppointmentReminder::dispatch($booking)->delay($reminderTime);
-            Mail::to(Auth::user()->email)->send(new BookingConfirmationMail($booking));
+            Mail::to(Auth::user()->email)->queue(new BookingConfirmationMail($booking));
+
             return redirect()->route('calendario')->with('success', 'Prenotazione effettuata con successo!');
         }
 
