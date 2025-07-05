@@ -48,23 +48,9 @@ function generateDays() {
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
     const currentDate = new Date();
-    const alwaysSelectableDates = [
-        "2024-12-23",
-        "2024-12-29",
-        "2024-12-30"
-    ];
-
-    const nonBookableDates = {
-        7: [13, 14, 15, 16, 17], // Agosto
-        8: [6, 7], // Settembre
-        10: [1, 2], // Novembre
-        11: [25, 26, 31], // Dicembre
-        0: [1, 2, 3, 4], // Gennaio 2025
-        1: [25], // Febbraio 2025
-        3: [24, 25, 26], // Aprile 2025
-        4: [1] // Maggio 2025
-
-    };
+    const unavailableDates = window.unavailableDates || [];
+    const fullyBookedDates = window.fullyBookedDates || [];
+    const isAdmin = !!window.isAdmin;
 
     let startingDay = firstDayOfMonth.getDay();
     for (let i = 0; i < startingDay; i++) {
@@ -76,6 +62,15 @@ function generateDays() {
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
         const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("day-wrapper");
+        wrapper.style.position = "relative";
+        wrapper.dataset.date = formattedDate;
+
+        const dayOfWeek = date.getDay();
+        const isSundayOrMonday = (dayOfWeek === 0 || dayOfWeek === 1);
+        const isPastDate = date < new Date().setHours(0, 0, 0, 0);
+
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
         dateElement.setAttribute('data-date', formattedDate);
@@ -84,69 +79,116 @@ function generateDays() {
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
-        const isPastDate = date < currentDate.setHours(0, 0, 0, 0);
+        const isUnavailable = unavailableDates.includes(formattedDate);
 
-        const isNonBookable =
-            nonBookableDates[currentMonth] &&
-            nonBookableDates[currentMonth].includes(i) &&
-            !alwaysSelectableDates.includes(formattedDate);
-
-        if (isPastDate || isNonBookable) {
+        if (isPastDate || isUnavailable || isSundayOrMonday) {
             dateElement.classList.add("non-selectable");
-        } else if (!alwaysSelectableDates.includes(formattedDate)) {
-            const dayOfWeek = date.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 1) {
-                dateElement.classList.add("non-selectable");
-            } else {
-                // Selezionabili: aggiungi il listener e controlla se sono fully booked
-                if (fullyBookedDates.includes(formattedDate)) {
-                    dateElement.classList.add("fully-booked");
-                }
-                // Rendi comunque selezionabili tutte le date, incluse le fully-booked
-                dateElement.addEventListener("click", () => {
-                    window.location.search = `?date=${formattedDate}`;
-                });
-                
-            }
+            dateElement.style.pointerEvents = "none";
+            dateElement.style.cursor = "default";
         } else {
-            // Sempre selezionabili: controlla se sono fully booked
             if (fullyBookedDates.includes(formattedDate)) {
                 dateElement.classList.add("fully-booked");
-            } else {
-                dateElement.addEventListener("click", () => {
-                    window.location.search = `?date=${formattedDate}`;
-                });
             }
+            dateElement.addEventListener("click", () => {
+                window.location.search = `?date=${formattedDate}`;
+            });
         }
 
-        datesContainer.appendChild(dateElement);
+        if (isAdmin && !isSundayOrMonday && !isPastDate) {
+            const icon = document.createElement("span");
+            icon.className = "lock-icon";
+            icon.innerText = unavailableDates.includes(formattedDate) ? "🔒" : "🔓";
+            icon.style.position = "absolute";
+            icon.style.top = "-30px";
+            icon.style.left = "50%";
+            icon.style.transform = "translateX(-50%)";
+            icon.style.cursor = "pointer";
+            icon.style.fontSize = "1.2em";
+            icon.style.zIndex = "10";
+
+            icon.addEventListener("click", async e => {
+                e.stopPropagation();
+
+                const isCurrentlyBlocked = unavailableDates.includes(formattedDate);
+
+                if (!isCurrentlyBlocked) {
+                    const result = await Swal.fire({
+                        title: 'Bloccare il giorno?',
+                        text: `Sei sicuro di voler bloccare il giorno ${formattedDate}? Gli utenti non potranno più prenotare in questa data.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#E74C3C',
+                        cancelButtonColor: '#aaa',
+                        confirmButtonText: 'Sì, blocca',
+                        cancelButtonText: 'Annulla'
+                    });
+
+                    if (!result.isConfirmed) return;
+                }
+
+                try {
+                    const response = await fetch("/admin/toggle-date", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ date: formattedDate })
+                    });
+
+                    const json = await response.json();
+
+                    if (json.status === "blocked") {
+                        if (!unavailableDates.includes(formattedDate)) unavailableDates.push(formattedDate);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Bloccato',
+                            text: `Il giorno ${formattedDate} è stato bloccato con successo.`,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (json.status === "unblocked") {
+                        const idx = unavailableDates.indexOf(formattedDate);
+                        if (idx > -1) unavailableDates.splice(idx, 1);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sbloccato',
+                            text: `Il giorno ${formattedDate} è stato sbloccato con successo.`,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+
+                    generateDays();
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errore di rete',
+                        text: 'Impossibile comunicare con il server.',
+                        confirmButtonColor: '#E74C3C'
+                    });
+                }
+            });
+
+            wrapper.appendChild(icon);
+        }
 
         if (selectedDate && formattedDate === selectedDate.toISOString().split('T')[0]) {
             dateElement.classList.add('active');
         }
+
+        wrapper.appendChild(dateElement);
+        datesContainer.appendChild(wrapper);
     }
 }
 
-
-
 function applyFullyBookedStyles() {
-    const fullyBookedDates = [
-        // Queste date devono essere passate dal backend
-    ];
-
-    const alwaysSelectableDates = [
-        "2024-12-23",
-        "2024-12-29",
-        "2024-12-30"
-    ];
-
+    const fullyBookedDates = [];
     document.querySelectorAll('.date span').forEach(function (spanElement) {
         const date = spanElement.parentElement.getAttribute('data-date').trim();
-
         if (fullyBookedDates.includes(date)) {
             spanElement.classList.add('fully-booked');
-        } else if (alwaysSelectableDates.includes(date)) {
-            spanElement.classList.remove('fully-booked');
         }
     });
 }
@@ -167,10 +209,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 innerBtn.classList.remove('btn-primary');
                 innerBtn.classList.add('btn-outline-primary');
             });
-
             btn.classList.remove('btn-outline-primary');
             btn.classList.add('btn-primary');
-
             selectedTimeInput.value = btn.getAttribute('data-time');
         });
     });
@@ -178,53 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (selectedTimeInput.value) {
         let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
         if (selectedButton) {
-            selectedButton.click(); // Simula un clic sul bottone per selezionarlo
+            selectedButton.click();
         }
     }
 });
-
-
-
-// function generateDays() {
-//     const datesContainer = document.getElementById("dates");
-//     datesContainer.innerHTML = '';
-
-//     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-//     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-
-//     let startingDay = firstDayOfMonth.getDay();
-//     for (let i = 0; i < startingDay; i++) {
-//         const emptyDateElement = document.createElement("div");
-//         emptyDateElement.classList.add("date", "out-of-month");
-//         datesContainer.appendChild(emptyDateElement);
-//     }
-
-//     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-//         const date = new Date(currentYear, currentMonth, i);
-//         const dayOfWeek = date.getDay();
-//         const dateElement = document.createElement("div");
-//         dateElement.classList.add("date");
-//         dateElement.setAttribute('data-date', `${currentYear}-${currentMonth + 1}-${i}`);
-
-//         const spanElement = document.createElement("span");
-//         spanElement.classList.add("day");
-//         spanElement.textContent = i;
-
-//         if (dayOfWeek !== 0 && dayOfWeek !== 1) {
-//             // Solo i giorni che non sono domenica (0) o lunedì (1) sono selezionabili
-//             dateElement.addEventListener("click", () => {
-//                 window.location.search = `?date=${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-//             });
-//         } else {
-//             // Applica una classe CSS per giorni non selezionabili (ad esempio, 'non-selectable')
-//             dateElement.classList.add("non-selectable");
-//         }
-
-//         dateElement.appendChild(spanElement);
-//         datesContainer.appendChild(dateElement);
-
-//         if (selectedDate && i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
-//             dateElement.classList.add('active');
-//         }
-//     }
-// }

@@ -20,7 +20,6 @@
     }
 }
 
-
 /* Stili generali per la prenotazione */
 .booking-container {
     margin-top: 20px;
@@ -33,22 +32,18 @@
 }
 
 .booking-header {
-    /* color: var(--dark-shade); */
     color: white;
-    font-size: 28px;
+    font-size: 40px;
     letter-spacing: 1.5px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: 25px;
     text-align: center;
-    font-size: 40px;
     font-family: 'Fjalla One', sans-serif;
     font-weight: 600;
-    
 }
 
 /* Calendario */
 .calendar-wrapper {
-    /* background: linear-gradient(135deg, var(--light-shade) 0%, var(--primary-color) 100%); */
     border: none;
     border-radius: var(--border-radius);
     padding: 24px;
@@ -61,7 +56,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 22px;
-    background-color: rgba(0, 0, 0, 0.05); /* Un leggero sfondo scuro per contrasto */
+    background-color: rgba(0, 0, 0, 0.05);
     color: white;
     font-weight: 600;
     border-radius: var(--border-radius);
@@ -69,52 +64,55 @@
     font-family: 'Fjalla One', sans-serif;
 }
 
-
-
 .month-selector:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.datepicker-section .days, .dates {
+.datepicker-section .days,
+.datepicker-section .dates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 25px;
+    gap: 16px;
+    margin-top: 20px;
 }
 
 .datepicker-section, .date {
     text-align: center;
-    padding: 14px 0;
     color: white;
     font-weight: 600;
     border-radius: var(--border-radius);
     transition: background var(--transition-time) ease, transform var(--transition-time) ease;
 }
 
-.date{
+.date {
     font-family: 'Fjalla One', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     color: black;
-}
-
-.datepicker-section .date {
     background: var(--light-shade);
     cursor: pointer;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    position: relative;
 }
 
-.datepicker-section .date:hover {
+.date:hover {
     background: var(--accent-color);
     color: black;
-    transform: translateY(-6px); /* Effetto sollevamento */
+    transform: translateY(-6px);
 }
 
-.datepicker-section .date.active {
+.date.active {
     background: gray;
     color: black;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 }
 
 /* Prenotazione */
-.reservation-card{
+.reservation-card {
     border-radius: 20px;
 }
 
@@ -122,8 +120,9 @@
     margin-bottom: 20px;
 }
 
-.reservation-body{
+.reservation-body {
     border-radius: 20px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8631827731092436) 100%, rgba(163,164,164,0.835171568627451) 100%);
 }
 
 .reservation-section .form-control {
@@ -156,10 +155,6 @@
     color: black;
 }
 
-.reservation-body{
-    background: linear-gradient(180deg, rgba(0,0,0,0.8631827731092436) 100%, rgba(163,164,164,0.835171568627451) 100%);
-}
-
 .btn-show-bookings {
     display: block;
     margin: 25px auto 0;
@@ -168,7 +163,7 @@
 .delete-booking-btn {
     background-color: var(--negative-color);
     border: none;
-    color: #FFFFFF; /* Testo bianco */
+    color: #FFFFFF;
     border-radius: var(--border-radius);
     padding: 6px 20px;
     font-size: 18px;
@@ -177,18 +172,12 @@
 }
 
 .delete-booking-btn:hover {
-    background-color: var(--hover-negative-color); /* Rosso più scuro per l'effetto hover */
+    background-color: var(--hover-negative-color);
 }
 
-/* Date fuori dal mese corrente */
 .out-of-month {
-    opacity: 0.4; /* Rende le date semitrasparenti */
-    cursor: default; /* Indica che non sono selezionabili */
-    
-}
-
-/* Potresti voler rendere non interagibili queste date */
-.out-of-month, .out-of-month:hover {
+    opacity: 0.4;
+    cursor: default;
     pointer-events: none;
     transform: none !important;
 }
@@ -202,32 +191,80 @@
 }
 
 .non-selectable {
-    color: #d8d2c8;
-    opacity: 0.5; /* Rende l'elemento semi-trasparente; puoi modificare questo valore secondo le tue preferenze */
-    pointer-events: none; /* Disabilita eventi del mouse come il click */
+    color: white;
+    background-color: #3a3a3a !important;
+    opacity: 1;
+    border: 1px solid #777;
+}
+
+.non-selectable span {
+    pointer-events: none;
+}
+
+.lock-icon {
+    display: none;
+    font-size: 18px;
+    color: orange;
+    position: absolute;
+    top: -45px; /* ancora più in alto rispetto alla cella */
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 35;
 }
 
 
-/* Utilizza media queries per dispositivi con schermi piccoli */
-@media (max-width: 900px) { /* Adatta questo valore in base alle tue esigenze */
-    .datepicker-section .days, .dates {
-        gap: 8px; /* Riduci lo spazio tra le celle */
+
+
+body.admin .lock-icon {
+    display: inline;
+}
+
+@media (max-width: 900px) {
+    body:not(.admin) .datepicker-section .days,
+    body:not(.admin) .datepicker-section .dates,
+    body:not(.admin) #dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        column-gap: 4px;
+        row-gap: 2px;
+        padding: 4px 0;
     }
-    
-    .datepicker-section .day, .date {
-        padding: 8px 0; /* Riduci il padding */
+
+    body:not(.admin) .day-wrapper {
+        height: 58px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
-    .select2-dropdown {
-        width: 73% !important;
-    }
-    .select2-container {
+
+    body:not(.admin) .date {
         font-size: 14px;
-        
+        height: 40px;
+        width: 100%;
+        padding: 0;
     }
-    .reservation-section {
-        margin-top: 30px; /* Adatta questo valore in base alle tue esigenze */
+
+    body:not(.admin) .lock-icon {
+        font-size: 12px;
+        top: -16px;
+    }
+
+    body:not(.admin) .select2-container {
+        font-size: 13px;
+    }
+
+    body:not(.admin) .reservation-section {
+        margin-top: 25px;
+    }
+
+    body:not(.admin) .datepicker-section .day {
+        font-size: 13px;
     }
 }
+
+
 
 
 .time-buttons-wrapper {
@@ -247,7 +284,7 @@
 }
 
 .time-radio {
-    display: none;  /* Nasconde i campi radio */
+    display: none;
 }
 
 .time-radio:checked + .time-btn {
@@ -255,8 +292,53 @@
     color: white;
 }
 
-
 .fully-booked {
     background-color: rgb(255, 0, 0) !important;
     font-weight: bold;
 }
+
+.day-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 80px;
+    position: relative;
+}
+
+.swal2-popup {
+    font-size: 1.1rem !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    background: #f9f9f9 !important;
+}
+
+.swal2-confirm {
+    background-color: var(--negative-color) !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+}
+
+.swal2-cancel {
+    background-color: #aaa !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+}
+
+.swal2-mobile {
+    font-size: 16px !important;
+    width: 90% !important;
+    max-width: 350px !important;
+}
+
+#dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+}
+

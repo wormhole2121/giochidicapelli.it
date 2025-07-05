@@ -138,9 +138,14 @@
     @endauth
 
     <!-- Passa l'array PHP fullyBookedDates al JavaScript come JSON -->
+    <!-- Prima dello script -->
     <script>
-        const fullyBookedDates = @json($fullyBookedDates);
+        window.isAdmin = @json(Auth::check() && Auth::user()->is_admin);
+        window.unavailableDates = @json($unavailableDates);
+        window.fullyBookedDates = @json($fullyBookedDates);
     </script>
     <script src="{{ asset('js/calendario.js') }}"></script>
-</x-layout>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+</x-layout>

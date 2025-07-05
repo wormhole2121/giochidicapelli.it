@@ -10,6 +10,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <!-- json -->
     <link rel="manifest" href="/manifest.json">
@@ -52,7 +54,8 @@
     <title>Giochi di capelli</title>
 </head>
 
-<body>
+<body class="{{ Auth::check() && Auth::user()->is_admin ? 'admin' : '' }}">
+
     <x-navbar></x-navbar>
     <header class="container-image">
 
