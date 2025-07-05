@@ -52,20 +52,20 @@ class BookingController extends Controller
             $dayOfWeek = $startDate->dayOfWeek;
             $timeslots = [];
 
-            // 🔄 SLOT 30 min
+            // Slot aggiornati
             if (in_array($date, $alwaysSelectableDates) || in_array($dayOfWeek, [2, 3])) {
-                $morning = range(510, 690 - 30, 30); // 08:30 - 11:30
-                $afternoon = range(840, 1140 - 30, 30); // 14:00 - 19:00
+                $morning = range(510, 690, 30);       // 08:30 - 11:30
+                $afternoon = range(840, 1140, 30);    // 14:00 - 19:00
                 $timeslots = array_merge($morning, $afternoon);
             } elseif ($dayOfWeek == 4) { // Giovedì
-                $timeslots = range(840, 1230 - 30, 30); // 14:00 - 20:30
+                $timeslots = range(840, 1230, 30); // 14:00 - 20:30 incluso
             } elseif ($dayOfWeek == 5) { // Venerdì
-                $morning = range(480, 690 - 30, 30); // 08:00 - 11:30
-                $afternoon = range(840, 1140 - 30, 30); // 14:00 - 19:00
+                $morning = range(480, 690, 30);       // 08:00 - 11:30
+                $afternoon = range(840, 1140, 30);    // 14:00 - 19:00
                 $timeslots = array_merge($morning, $afternoon);
             } elseif ($dayOfWeek == 6) { // Sabato
-                $morning = range(480, 690 - 30, 30); // 08:00 - 11:30
-                $afternoon = range(840, 1110 - 30, 30); // 14:00 - 18:00
+                $morning = range(480, 690, 30);       // 08:00 - 11:30
+                $afternoon = range(840, 1110, 30);    // 14:00 - 18:30
                 $timeslots = array_merge($morning, $afternoon);
             }
 
@@ -87,20 +87,19 @@ class BookingController extends Controller
             $formattedDate = Carbon::parse($selectedDate)->format('Y-m-d');
             $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
 
-            // 🔄 SLOT 30 min
             if (in_array($formattedDate, $alwaysSelectableDates) || in_array($selectedDayOfWeek, [2, 3])) {
-                $morning = range(510, 690 - 30, 30);
-                $afternoon = range(840, 1140 - 30, 30);
+                $morning = range(510, 690, 30);
+                $afternoon = range(840, 1140, 30);
                 $timeslots = array_merge($morning, $afternoon);
             } elseif ($selectedDayOfWeek == 4) {
-                $timeslots = range(840, 1230 - 30, 30);
+                $timeslots = range(840, 1230, 30); // 14:00 - 20:30 incluso
             } elseif ($selectedDayOfWeek == 5) {
-                $morning = range(480, 690 - 30, 30);
-                $afternoon = range(840, 1140 - 30, 30);
+                $morning = range(480, 690, 30);
+                $afternoon = range(840, 1140, 30);
                 $timeslots = array_merge($morning, $afternoon);
             } elseif ($selectedDayOfWeek == 6) {
-                $morning = range(480, 690 - 30, 30);
-                $afternoon = range(840, 1110 - 30, 30);
+                $morning = range(480, 690, 30);
+                $afternoon = range(840, 1110, 30);
                 $timeslots = array_merge($morning, $afternoon);
             }
 
@@ -123,7 +122,6 @@ class BookingController extends Controller
         $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
         $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
 
-        // ✅ Aggiunta blocchi dinamici dal DB + domeniche/lunedì
         $dbBlocked = \App\Models\UnavailableDate::pluck('date')->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))->toArray();
         $today = now()->startOfDay();
         $sundayMonday = [];
@@ -172,7 +170,7 @@ class BookingController extends Controller
         }
 
         $startTime = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validatedData['start_time']);
-        $endTime = $startTime->copy()->addMinutes(30); // 🔁 Durata fissa
+        $endTime = $startTime->copy()->addMinutes(30); // Durata fissa
 
         $overlappingBooking = Booking::where('date', $validatedData['date'])
             ->where(function ($query) use ($startTime, $endTime) {
@@ -183,9 +181,6 @@ class BookingController extends Controller
         if ($overlappingBooking) {
             return redirect()->route('calendario')->with('error', 'L\'orario selezionato è già prenotato.');
         }
-
-        // La validazione oraria può rimanere invariata
-        // [omessa per spazio ma è OK]
 
         $booking = new Booking([
             'user_id' => Auth::id(),
@@ -209,7 +204,8 @@ class BookingController extends Controller
         return redirect()->route('calendario')->with('error', 'Errore durante il salvataggio della prenotazione.');
     }
 
-    public function leMiePrenotazioni() {
+    public function leMiePrenotazioni()
+    {
         Carbon::setLocale('it');
         $userBookings = Booking::where('user_id', Auth::id())
             ->orderBy('date', 'asc')
@@ -219,7 +215,8 @@ class BookingController extends Controller
         return view('le-mie-prenotazioni', compact('userBookings'));
     }
 
-    public function elimina($id) {
+    public function elimina($id)
+    {
         $booking = Booking::find($id);
         if (!$booking) {
             return redirect()->route('le-mie-prenotazioni')->with('error', 'Appuntamento non trovato.');
@@ -243,6 +240,7 @@ class BookingController extends Controller
         if (!Auth::check() || !Auth::user()->is_admin) {
             return response()->json(['error'=>'Non autorizzato'],403);
         }
+
         $date = Carbon::parse($request->date);
         if (in_array($date->dayOfWeek, [0,1])) {
             return response()->json(['error'=>'Impossibile modificare Domenica/Lunedì'], 400);
@@ -253,6 +251,7 @@ class BookingController extends Controller
             $exists->delete();
             return response()->json(['status'=>'unblocked']);
         }
+
         UnavailableDate::create(['date'=>$date->format('Y-m-d')]);
         return response()->json(['status'=>'blocked']);
     }
