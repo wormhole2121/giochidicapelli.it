@@ -2,6 +2,9 @@ let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let selectedDate = null;
 
+// *** AGGIUNTA ECCEZIONI ***
+const specialDates = ["2025-12-22", "2025-12-28", "2025-12-29"]; 
+
 const params = new URLSearchParams(window.location.search);
 if (params.has('date')) {
     selectedDate = new Date(params.get('date'));
@@ -68,7 +71,11 @@ function generateDays() {
         wrapper.dataset.date = formattedDate;
 
         const dayOfWeek = date.getDay();
-        const isSundayOrMonday = (dayOfWeek === 0 || dayOfWeek === 1);
+        
+        // *** NUOVA LOGICA ECCEZIONI ***
+        const isSundayOrMonday = (dayOfWeek === 0 || dayOfWeek === 1) && !specialDates.includes(formattedDate);
+        const isUnavailable = unavailableDates.includes(formattedDate) && !specialDates.includes(formattedDate);
+
         const isPastDate = date < new Date().setHours(0, 0, 0, 0);
 
         const dateElement = document.createElement("div");
@@ -78,8 +85,6 @@ function generateDays() {
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
-
-        const isUnavailable = unavailableDates.includes(formattedDate);
 
         if (isPastDate || isUnavailable || isSundayOrMonday) {
             dateElement.classList.add("non-selectable");
@@ -94,7 +99,7 @@ function generateDays() {
             });
         }
 
-        if (isAdmin && !isSundayOrMonday && !isPastDate) {
+        if (isAdmin && !isPastDate) {
             const icon = document.createElement("span");
             icon.className = "lock-icon";
             icon.innerText = unavailableDates.includes(formattedDate) ? "🔒" : "🔓";
@@ -111,10 +116,10 @@ function generateDays() {
 
                 const isCurrentlyBlocked = unavailableDates.includes(formattedDate);
 
-                if (!isCurrentlyBlocked) {
+                if (!isCurrentlyBlocked && !specialDates.includes(formattedDate)) {
                     const result = await Swal.fire({
                         title: 'Bloccare il giorno?',
-                        text: `Sei sicuro di voler bloccare il giorno ${formattedDate}? Gli utenti non potranno più prenotare in questa data.`,
+                        text: `Sei sicuro di voler bloccare il giorno ${formattedDate}? Gli utenti non potranno più prenotare.`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#E74C3C',
@@ -142,20 +147,18 @@ function generateDays() {
                         if (!unavailableDates.includes(formattedDate)) unavailableDates.push(formattedDate);
                         Swal.fire({
                             icon: 'success',
-                            title: 'Bloccato',
-                            text: `Il giorno ${formattedDate} è stato bloccato con successo.`,
-                            showConfirmButton: false,
-                            timer: 1500
+                            title: 'Bloccato!',
+                            timer: 1500,
+                            showConfirmButton: false
                         });
                     } else if (json.status === "unblocked") {
                         const idx = unavailableDates.indexOf(formattedDate);
                         if (idx > -1) unavailableDates.splice(idx, 1);
                         Swal.fire({
                             icon: 'success',
-                            title: 'Sbloccato',
-                            text: `Il giorno ${formattedDate} è stato sbloccato con successo.`,
-                            showConfirmButton: false,
-                            timer: 1500
+                            title: 'Sbloccato!',
+                            timer: 1500,
+                            showConfirmButton: false
                         });
                     }
 
@@ -165,8 +168,7 @@ function generateDays() {
                     Swal.fire({
                         icon: 'error',
                         title: 'Errore di rete',
-                        text: 'Impossibile comunicare con il server.',
-                        confirmButtonColor: '#E74C3C'
+                        text: 'Impossibile comunicare col server.'
                     });
                 }
             });
@@ -181,16 +183,6 @@ function generateDays() {
         wrapper.appendChild(dateElement);
         datesContainer.appendChild(wrapper);
     }
-}
-
-function applyFullyBookedStyles() {
-    const fullyBookedDates = [];
-    document.querySelectorAll('.date span').forEach(function (spanElement) {
-        const date = spanElement.parentElement.getAttribute('data-date').trim();
-        if (fullyBookedDates.includes(date)) {
-            spanElement.classList.add('fully-booked');
-        }
-    });
 }
 
 $(document).ready(function () {
