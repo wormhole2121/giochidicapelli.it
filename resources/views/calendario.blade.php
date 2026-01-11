@@ -32,6 +32,7 @@
                             <h2 id="currentMonth" class="text-center month-display"></h2>
                             <button id="nextMonth" class="btn month-next active">&gt;</button>
                         </div>
+
                         <div class="days weekdays-header">
                             <div class="day">Dom</div>
                             <div class="day">Lun</div>
@@ -41,6 +42,7 @@
                             <div class="day">Ven</div>
                             <div class="day">Sab</div>
                         </div>
+
                         <div class="dates days-display" id="dates"></div>
                     </div>
 
@@ -51,7 +53,8 @@
                                 <option value="" disabled selected>Seleziona una data</option>
                                 @foreach ($availableDates as $date)
                                     <option value="{{ $date }}" {{ $selectedDate == $date ? 'selected' : '' }}>
-                                        {{ $date }}</option>
+                                        {{ $date }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -59,25 +62,34 @@
                     </form>
                 </div>
 
+                {{-- =========================
+                     PRENOTAZIONE (solo stile, logica identica)
+                     ========================= --}}
                 <div class="col-md-6 col-sm-12 reservation-section">
-                    <div class="card reservation-card">
-                        <div class="card-body reservation-body">
-                            <h3 class="card-header reservation-header text-center t-white mb-2">Prenota un Appuntamento</h3>
+                    <div class="reservation-card ui-card">
+                        <div class="ui-card__header">
+                            <h3 class="ui-card__title">Prenota un Appuntamento</h3>
+                        </div>
+
+                        <div class="reservation-body ui-card__body">
                             <form action="{{ route('prenota') }}" class="reservation-form" method="POST">
                                 @csrf
                                 <input type="hidden" name="date" value="{{ $selectedDate }}">
+
                                 <div class="form-group">
                                     <label for="name" class="t-white">Nome e Cognome:</label>
                                     <input type="text" name="name" id="name" class="form-control" required>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="phone" class="t-white">Numero di Telefono:</label>
                                     <input type="text" name="phone" id="phone" class="form-control" required>
                                 </div>
+
                                 <div class="form-group">
                                     <p class="t-white">*Ogni taglio comprende lo shampoo*</p>
                                     <label for="haircut_types" class="t-white">Tipologia di Tagli:</label>
-                                    <select multiple name="haircut_types[]" id="haircut_types" class="form-control" multiple required>
+                                    <select multiple name="haircut_types[]" id="haircut_types" class="form-control" required>
                                         <option value="Taglio">Taglio</option>
                                         <option value="Taglio con modellatura barba">Taglio con modellatura barba</option>
                                         <option value="Taglio Razor fade(Sfumatura)">Taglio Razor fade (sfumatura)</option>
@@ -90,8 +102,15 @@
                                     <label>Seleziona un orario:</label>
                                     <div class="time-buttons-wrapper">
                                         @foreach ($availableTimes as $index => $hour)
-                                            <input type="radio" id="time-{{ $index }}" name="start_time" value="{{ $hour }}" class="time-radio" {{ old('start_time') == $hour ? 'checked' : '' }}>
-                                            <label for="time-{{ $index }}" class="btn btn-outline-primary time-btn">{{ $hour }}</label>
+                                            <input
+                                                type="radio"
+                                                id="time-{{ $index }}"
+                                                name="start_time"
+                                                value="{{ $hour }}"
+                                                class="time-radio"
+                                                {{ old('start_time') == $hour ? 'checked' : '' }}
+                                            >
+                                            <label for="time-{{ $index }}" class="time-btn">{{ $hour }}</label>
                                         @endforeach
                                     </div>
                                 </div>
@@ -103,49 +122,77 @@
                 </div>
             </div>
 
+            {{-- =========================
+                 PRENOTAZIONI MOSTRATE SOTTO (stile come screenshot, NO DATA, più compatte)
+                 Logica identica.
+                 ========================= --}}
             @if ($selectedDate)
-                <ul class="list-group bookings-list my-3">
+                <div class="bookings-list my-3">
                     @foreach ($bookings as $booking)
                         @if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id()))
-                            <li class="list-group-item booking-item" style="margin-bottom:20px; border-radius:10px">
-                                <strong>Data:</strong>
-                                {{ \Carbon\Carbon::parse($booking->date)->isoFormat('dddd, D MMMM YYYY') }}
-                                <br>
-                                <strong>Orario:</strong> {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
-                                {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
-                                <br>
-                                <strong>Nome Utente:</strong> {{ $booking->user->name }} {{ $booking->user->surname }}
-                                <br>
-                                <strong>Numero di Telefono:</strong> {{ $booking->phone }}
-                                <br>
-                                <strong>Tipologie di Taglio:</strong>
-                                {{ is_array(json_decode($booking->haircut_types, true)) ? implode(', ', json_decode($booking->haircut_types, true)) : $booking->haircut_types }}
+                            <div class="booking-card ui-card booking-card--compact">
 
-                                <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                                    <button type="submit" class="btn delete-booking-btn mt-2">Elimina</button>
-                                    <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}" class="btn btn-info mt-2">Mostra dettagli</a>
-                                </form>
-                            </li>
+                                {{-- Header: SOLO ORARIO (niente data) --}}
+                                <div class="ui-card__header booking-card__header booking-card__header--compact">
+                                    <div class="booking-card__time">
+                                        {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
+                                    </div>
+                                </div>
+
+                                <div class="ui-card__body booking-card__body booking-card__body--compact">
+                                    <div class="booking-grid booking-grid--compact">
+
+                                        <div class="booking-row booking-row--compact">
+                                            <span class="booking-label">Nome</span>
+                                            <span class="booking-value">{{ $booking->user->name }} {{ $booking->user->surname }}</span>
+                                        </div>
+
+                                        <div class="booking-row booking-row--compact">
+                                            <span class="booking-label">Telefono</span>
+                                            <span class="booking-value">{{ $booking->phone }}</span>
+                                        </div>
+
+                                        <div class="booking-row booking-row--compact">
+                                            <span class="booking-label">Tipologie di taglio</span>
+                                            <span class="booking-value">
+                                                {{ is_array(json_decode($booking->haircut_types, true)) ? implode(', ', json_decode($booking->haircut_types, true)) : $booking->haircut_types }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <form action="{{ route('elimina', ['id' => $booking->id]) }}" class="delete-booking-form booking-actions booking-actions--compact" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+
+                                        <button type="submit" class="btn delete-booking-btn delete-booking-btn--full">
+                                            Elimina Prenotazione
+                                        </button>
+
+                                        {{-- Tenuto ma nascosto via CSS per look pulito (se lo vuoi, lo riattiviamo) --}}
+                                        <a href="{{ route('le-mie-prenotazioni', ['id' => $booking->id]) }}" class="btn booking-details-btn">
+                                            Mostra dettagli
+                                        </a>
+                                    </form>
+                                </div>
+
+                            </div>
                         @endif
                     @endforeach
-                </ul>
+                </div>
             @endif
 
         </div>
     @endauth
 
     <!-- Passa l'array PHP fullyBookedDates al JavaScript come JSON -->
-    <!-- Prima dello script -->
     <script>
         window.isAdmin = @json(Auth::check() && Auth::user()->is_admin);
         window.unavailableDates = @json($unavailableDates);
         window.fullyBookedDates = @json($fullyBookedDates);
     </script>
+
     <script src="{{ asset('js/calendario.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
 </x-layout>

@@ -1,0 +1,416 @@
+/* ===============================
+   LE MIE PRENOTAZIONI (PREMIUM)
+   =============================== */
+
+   .my-bookings{
+    padding: 14px 0 34px;
+  }
+  
+  /* Header premium: glass + gradiente */
+  .my-bookings .page-head-premium{
+    max-width: 980px;
+    margin: 10px auto 14px;
+    padding: 14px 14px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid rgba(0,0,0,.06);
+    background:
+      radial-gradient(circle at top left, rgba(0,0,0,.06), transparent 55%),
+      radial-gradient(circle at bottom right, rgba(0,0,0,.05), transparent 60%),
+      rgba(255,255,255,.65);
+    box-shadow: 0 18px 40px rgba(0,0,0,.10);
+    backdrop-filter: blur(10px);
+  }
+  
+  .my-bookings .back-link-premium{
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #111;
+    background: rgba(0,0,0,.06);
+    transition: transform .10s ease, background .15s ease;
+    flex: 0 0 auto;
+  }
+  
+  .my-bookings .back-link-premium:hover{
+    background: rgba(0,0,0,.10);
+    transform: translateY(-1px);
+  }
+  
+  .my-bookings .back-link-premium i{
+    font-size: 18px;
+  }
+  
+  .my-bookings .page-head-text-premium{
+    flex: 1;
+    line-height: 1.1;
+  }
+  
+  .my-bookings .page-title-premium{
+    margin: 0;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 30px;
+    color: #111;
+    letter-spacing: .3px;
+  }
+  
+  .my-bookings .page-subtitle-premium{
+    margin: 7px 0 0;
+    font-size: 14px;
+    opacity: .72;
+  }
+  
+  .my-bookings .page-head-badge{
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, rgba(0,0,0,.85), rgba(0,0,0,.55));
+    color: #fff;
+    box-shadow: 0 12px 26px rgba(0,0,0,.16);
+  }
+  
+  /* Alert */
+  .my-bookings .bookings-alert{
+    border-radius: 18px;
+    border: 0;
+  }
+  
+  /* Empty premium */
+  .my-bookings .empty-card-premium{
+    background: rgba(0,0,0,.03);
+    border-radius: 22px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 16px 36px rgba(0,0,0,.08);
+  }
+  
+  .my-bookings .empty-ico-premium{
+    width: 58px;
+    height: 58px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 10px;
+    background: rgba(0,0,0,.06);
+  }
+  
+  /* Date premium pill */
+  .my-bookings .date-premium{
+    margin: 16px 0 12px;
+  }
+  
+  .my-bookings .date-pill{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(255,255,255,.70);
+    box-shadow: 0 14px 34px rgba(0,0,0,.08);
+    backdrop-filter: blur(10px);
+    font-family: 'Fjalla One', sans-serif;
+    color: #111;
+  }
+  
+  .my-bookings .date-pill-ico{
+    width: 38px;
+    height: 38px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.06);
+  }
+  
+  .my-bookings .date-pill-chip{
+    margin-left: 6px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.10);
+    font-size: 14px;
+  }
+  
+  /* Lista */
+  .my-bookings .bookings-list{
+    padding-left: 0;
+    margin-bottom: 22px;
+  }
+  
+  /* Booking card premium */
+  .my-bookings .booking-item-premium{
+    border: 1px solid rgba(0,0,0,.06) !important;
+    border-radius: 22px !important;
+    background: rgba(255,255,255,.85);
+    box-shadow: 0 18px 44px rgba(0,0,0,.10);
+    overflow: hidden;
+    padding: 0;
+  }
+  
+  .my-bookings .booking-top-premium{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px 10px;
+    background: radial-gradient(circle at top, rgba(0,0,0,.05), transparent 65%);
+    border-bottom: 1px solid rgba(0,0,0,.06);
+  }
+  
+  .my-bookings .time-pill-premium{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 16px;
+    background: rgba(0,0,0,.06);
+    font-family: 'Fjalla One', sans-serif;
+  }
+  
+  .my-bookings .booking-id-premium{
+    font-size: 12px;
+    opacity: .6;
+  }
+  
+  /* body lines */
+  .my-bookings .booking-body-premium{
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .my-bookings .booking-line-premium{
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(0,0,0,.12);
+  }
+  
+  .my-bookings .booking-line-premium:first-child{
+    border-top: 0;
+    padding-top: 0;
+  }
+  
+  .my-bookings .line-ico{
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.06);
+    flex: 0 0 auto;
+  }
+  
+  .my-bookings .line-label{
+    font-size: 12px;
+    opacity: .65;
+  }
+  
+  .my-bookings .line-value{
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 16px;
+    color: #111;
+  }
+  
+  /* delete premium */
+  .my-bookings .delete-form-premium{
+    margin: 0;
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(0,0,0,.06);
+    background: rgba(0,0,0,.02);
+  }
+  
+  .my-bookings .btn-delete-premium{
+    width: 100%;
+    border: 0;
+    border-radius: 18px;
+    padding: 12px 12px;
+    background: rgba(220, 38, 38, .12);
+    color: #b91c1c;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform .10s ease, background .15s ease;
+  }
+  
+  .my-bookings .btn-delete-premium:hover{
+    background: rgba(220, 38, 38, .16);
+    transform: translateY(-1px);
+  }
+  
+  /* Mobile */
+  @media (max-width: 576px){
+    .my-bookings .page-head-premium{
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .my-bookings .page-title-premium{ font-size: 24px; }
+    .my-bookings .date-pill{ width: 100%; justify-content: space-between; }
+  }
+
+  /* HEADER: titolo centrato */
+.my-bookings .page-head-premium{
+    justify-content: center;
+  }
+  
+  .my-bookings .page-head-text-premium{
+    text-align: center;
+  }
+  
+  /* DATA: centrata */
+  .my-bookings .date-premium{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .my-bookings .date-pill{
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .my-bookings .page-head-text-premium{
+    text-align: center;
+    transform: translateX(-30px); /* sposta leggermente a sinistra */
+  }
+  
+  .my-bookings .date-pill-text{
+    font-size: 25px;
+  }
+  
+  /* ===============================
+   COLORI IDENTICI AL CALENDARIO
+   =============================== */
+
+/* Header */
+.my-bookings .page-head-premium{
+  background: linear-gradient(180deg, rgba(0,0,0,0.86) 100%, rgba(163,164,164,0.83) 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+}
+
+.my-bookings .back-link-premium{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+.my-bookings .page-title-premium{
+  color: #fff;
+}
+
+/* Data pill */
+.my-bookings .date-pill{
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: #fff;
+}
+
+.my-bookings .date-pill-ico{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+/* Card prenotazione */
+.my-bookings .booking-item-premium{
+  background: linear-gradient(180deg, rgba(0,0,0,0.86) 100%, rgba(163,164,164,0.83) 100%);
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  color: #fff;
+}
+
+/* Header orario */
+.my-bookings .booking-top-premium{
+  background: rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.my-bookings .time-pill-premium{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+/* Linee info */
+.my-bookings .booking-line-premium{
+  border-top: 1px dashed rgba(255,255,255,0.16);
+}
+
+.my-bookings .line-ico{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+.my-bookings .line-label{
+  color: rgba(255,255,255,0.65);
+}
+
+.my-bookings .line-value{
+  color: #fff;
+}
+
+/* Sezione elimina */
+.my-bookings .delete-form-premium{
+  background: rgba(0,0,0,0.20);
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Bottone elimina (stesso rosso del calendario) */
+.my-bookings .btn-delete-premium{
+  background-color: #E74C3C;
+  color: #fff;
+}
+
+.my-bookings .btn-delete-premium:hover{
+  background-color: #C0392B;
+}
+
+/* Empty state */
+.my-bookings .empty-card-premium{
+  background: linear-gradient(180deg, rgba(0,0,0,0.86) 100%, rgba(163,164,164,0.83) 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.my-bookings .empty-ico-premium{
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+}
+
+/* ===============================
+   DATA "LE MIE PRENOTAZIONI"
+   STESSI COLORI DEL CALENDARIO
+   =============================== */
+
+   .my-bookings .date-premium{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .my-bookings .date-pill{
+    background: linear-gradient(180deg, rgba(0,0,0,0.86) 100%, rgba(163,164,164,0.83) 100%);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  }
+  
+  .my-bookings .date-pill-ico{
+    background: rgba(255,255,255,0.10);
+    color: #fff;
+  }
+  
+  .my-bookings .date-pill-text{
+    color: #fff;
+  }
+  

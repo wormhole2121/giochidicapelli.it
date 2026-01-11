@@ -1,53 +1,57 @@
-/* Variabili globali */
-:root {
-    --primary-color: #a3907a; /* Beige */
-    --accent-color: #d8d2c8; 
-    --negative-color: #E74C3C; /* Rosso */
-    --hover-negative-color: #C0392B; /* Rosso scuro per l'hover */
-    --light-shade: #F3F3F3; /* Grigio molto chiaro */
-    --dark-shade: #525252; /* Grigio scuro */
+/* =========================
+   VARIABILI GLOBALI
+   ========================= */
+   :root {
+    --primary-color: #a3907a;
+    --accent-color: #d8d2c8;
+    --negative-color: #E74C3C;
+    --hover-negative-color: #C0392B;
+    --light-shade: #F3F3F3;
+    --dark-shade: #525252;
     --border-radius: 12px;
     --transition-time: 0.3s;
 }
 
-/* Animazioni */
+/* =========================
+   ANIMAZIONI
+   ========================= */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* Stili generali per la prenotazione */
+/* =========================
+   LAYOUT GENERALE
+   ========================= */
 .booking-container {
     margin-top: 20px;
     max-width: 1100px;
     border-radius: var(--border-radius);
     padding: 35px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.8631827731092436) 100%, rgba(163,164,164,0.835171568627451) 100%);
-    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(180deg, rgba(0,0,0,0.863) 100%, rgba(163,164,164,0.835) 100%);
+    box-shadow: 0 12px 18px rgba(0,0,0,0.08);
     animation: fadeIn 0.4s ease;
 }
 
 .booking-header {
-    color: white;
+    color: #fff;
     font-size: 40px;
     letter-spacing: 1.5px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.05);
     margin-bottom: 25px;
     text-align: center;
     font-family: 'Fjalla One', sans-serif;
     font-weight: 600;
 }
 
-/* Calendario */
+/* =========================
+   CALENDARIO
+   ========================= */
 .calendar-wrapper {
     border: none;
     border-radius: var(--border-radius);
     padding: 24px;
-    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 18px rgba(0,0,0,0.12);
     margin-bottom: 25px;
 }
 
@@ -56,16 +60,16 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 22px;
-    background-color: rgba(0, 0, 0, 0.05);
-    color: white;
+    background-color: rgba(0,0,0,0.05);
+    color: #fff;
     font-weight: 600;
     border-radius: var(--border-radius);
-    transition: all var(--transition-time) ease;
+    transition: background var(--transition-time) ease;
     font-family: 'Fjalla One', sans-serif;
 }
 
 .month-selector:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0,0,0,0.1);
 }
 
 .datepicker-section .days,
@@ -76,9 +80,18 @@
     margin-top: 20px;
 }
 
-.datepicker-section, .date {
+/* #dates separato perché tu lo usi anche da JS */
+#dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.datepicker-section,
+.date {
     text-align: center;
-    color: white;
+    color: #fff;
     font-weight: 600;
     border-radius: var(--border-radius);
     transition: background var(--transition-time) ease, transform var(--transition-time) ease;
@@ -87,7 +100,7 @@
 .date {
     font-family: 'Fjalla One', sans-serif;
     font-size: 18px;
-    color: black;
+    color: #000;
     background: var(--light-shade);
     cursor: pointer;
     width: 100%;
@@ -95,84 +108,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--border-radius);
     position: relative;
 }
 
 .date:hover {
     background: var(--accent-color);
-    color: black;
+    color: #000;
     transform: translateY(-6px);
 }
 
 .date.active {
     background: gray;
-    color: black;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
-}
-
-/* Prenotazione */
-.reservation-card {
-    border-radius: 20px;
-}
-
-.reservation-section .form-group {
-    margin-bottom: 20px;
-}
-
-.reservation-body {
-    border-radius: 20px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.8631827731092436) 100%, rgba(163,164,164,0.835171568627451) 100%);
-}
-
-.reservation-section .form-control {
-    background: white;
-    border: 2px solid var(--light-shade);
-    border-radius: var(--border-radius);
-    padding: 10px 15px;
-    transition: all var(--transition-time) ease;
-}
-
-.reservation-section .form-control:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(100, 182, 172, 0.15);
-}
-
-.reservation-section .btn, .btn-show-bookings {
-    padding: 12px 25px;
-    border: none;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    color: #fff;
-    background-color: var(--dark-shade);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);
-    transition: all var(--transition-time) ease;
-}
-
-.reservation-section .btn:hover, .btn-show-bookings:hover {
-    background-color: var(--accent-color);
-    color: black;
-}
-
-.btn-show-bookings {
-    display: block;
-    margin: 25px auto 0;
-}
-
-.delete-booking-btn {
-    background-color: var(--negative-color);
-    border: none;
-    color: #FFFFFF;
-    border-radius: var(--border-radius);
-    padding: 6px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all var(--transition-time) ease;
-}
-
-.delete-booking-btn:hover {
-    background-color: var(--hover-negative-color);
+    color: #000;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.12);
 }
 
 .out-of-month {
@@ -182,6 +130,24 @@
     transform: none !important;
 }
 
+.fully-booked {
+    background-color: rgb(255, 0, 0) !important;
+    font-weight: bold;
+}
+
+.day-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 80px;
+    position: relative;
+}
+
+/* =========================
+   SELECT2
+   ========================= */
 .select2-container {
     width: 80% !important;
 }
@@ -190,8 +156,11 @@
     width: 33% !important;
 }
 
+/* =========================
+   GIORNI NON SELEZIONABILI + LOCK
+   ========================= */
 .non-selectable {
-    color: white;
+    color: #fff;
     background-color: #3a3a3a !important;
     opacity: 1;
     border: 1px solid #777;
@@ -206,20 +175,312 @@
     font-size: 18px;
     color: orange;
     position: absolute;
-    top: -45px; /* ancora più in alto rispetto alla cella */
+    top: -45px;
     left: 50%;
     transform: translateX(-50%);
     cursor: pointer;
     z-index: 35;
 }
 
-
-
-
 body.admin .lock-icon {
     display: inline;
 }
 
+/* =========================
+   FORM PRENOTAZIONE (BASE)
+   ========================= */
+.reservation-card {
+    border-radius: 20px;
+}
+
+.reservation-section .form-group {
+    margin-bottom: 20px;
+}
+
+/* lo stile finale lo gestisce .ui-card, qui lo teniamo neutro */
+.reservation-body {
+    background: transparent !important;
+    border-radius: 0 !important;
+}
+
+.reservation-section .form-control {
+    background: #fff;
+    border: 2px solid var(--light-shade);
+    border-radius: var(--border-radius);
+    padding: 10px 15px;
+    transition: all var(--transition-time) ease;
+}
+
+.reservation-section .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(216,210,200,0.25);
+}
+
+.reservation-section .btn,
+.btn-show-bookings {
+    padding: 12px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--dark-shade);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.08);
+    transition: all var(--transition-time) ease;
+}
+
+.reservation-section .btn:hover,
+.btn-show-bookings:hover {
+    background-color: var(--accent-color);
+    color: #000;
+}
+
+.btn-show-bookings {
+    display: block;
+    margin: 25px auto 0;
+}
+
+/* delete base */
+.delete-booking-btn {
+    background-color: var(--negative-color);
+    border: none;
+    color: #fff;
+    border-radius: var(--border-radius);
+    padding: 6px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all var(--transition-time) ease;
+}
+
+.delete-booking-btn:hover {
+    background-color: var(--hover-negative-color);
+}
+
+/* =========================
+   SWEETALERT2
+   ========================= */
+.swal2-popup {
+    font-size: 1.1rem !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    background: #f9f9f9 !important;
+}
+
+.swal2-confirm {
+    background-color: var(--negative-color) !important;
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+}
+
+.swal2-cancel {
+    background-color: #aaa !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+}
+
+.swal2-mobile {
+    font-size: 16px !important;
+    width: 90% !important;
+    max-width: 350px !important;
+}
+
+/* =========================
+   UI CARD (MODERNA)
+   ========================= */
+.ui-card {
+    border-radius: 22px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.ui-card__header {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.ui-card__title {
+    margin: 0;
+    color: #fff;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 22px;
+    letter-spacing: .6px;
+}
+
+.ui-card__body {
+    padding: 18px 22px;
+    color: #fff;
+}
+
+/* input coerenti in ui-card */
+.ui-card .form-control,
+.ui-card select,
+.ui-card input {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.ui-card .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(216,210,200,0.25);
+}
+
+/* orari pill SOLO dentro ui-card */
+.ui-card .time-buttons-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ui-card .time-radio {
+    display: none;
+}
+
+.ui-card .time-btn {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.10);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.ui-card .time-btn:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+}
+
+.ui-card .time-radio:checked + .time-btn,
+.ui-card .selected-time {
+    background: #a3907a;
+    border-color: rgba(255,255,255,0.25);
+    color: #fff;
+}
+
+/* bottone prenota */
+.confirm-reservation-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #fff;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.confirm-reservation-btn:hover {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+/* =========================
+   PRENOTAZIONI SOTTO (COMPACT + FIX COMPLETO)
+   ========================= */
+.bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-card--compact {
+    padding: 0;
+}
+
+.booking-card__header--compact {
+    padding: 10px 14px;
+    justify-content: flex-start;
+}
+
+.booking-card__body--compact {
+    padding: 12px 14px;
+}
+
+/* GRID RIPRISTINATA (fondamentale) */
+.booking-grid--compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    margin-bottom: 10px;
+}
+
+/* tipologie full width */
+.booking-grid--compact .booking-row--compact:last-child {
+    grid-column: 1 / -1;
+}
+
+/* box scuri eleganti */
+.booking-row--compact {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 14px;
+    padding: 10px 12px;
+}
+
+.booking-row--compact .booking-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 6px;
+    font-weight: 800;
+}
+
+.booking-row--compact .booking-value {
+    display: block;
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+/* pill orario visibile e coerente */
+.booking-card__time {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.90);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+/* azioni */
+.booking-actions--compact {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* elimina snello */
+.delete-booking-btn--full {
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+    border-radius: 14px !important;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
 @media (max-width: 900px) {
     body:not(.admin) .datepicker-section .days,
     body:not(.admin) .datepicker-section .dates,
@@ -233,16 +494,11 @@ body.admin .lock-icon {
 
     body:not(.admin) .day-wrapper {
         height: 58px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
     }
 
     body:not(.admin) .date {
         font-size: 14px;
         height: 40px;
-        width: 100%;
         padding: 0;
     }
 
@@ -262,83 +518,29 @@ body.admin .lock-icon {
     body:not(.admin) .datepicker-section .day {
         font-size: 13px;
     }
+
+    /* prenotazioni sotto in 1 colonna */
+    .booking-grid--compact {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-grid--compact .booking-row--compact:last-child {
+        grid-column: auto;
+    }
+}
+.booking-details-btn {
+    display: inline-block !important;
+    background: rgba(255,255,255,0.12) !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+    color: #fff !important;
+    border-radius: 14px !important;
+    font-weight: 800;
+    padding: 10px 16px;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
 }
 
-
-
-
-.time-buttons-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+.booking-details-btn:hover {
+    background: rgba(255,255,255,0.22) !important;
+    border-color: rgba(255,255,255,0.25) !important;
+    transform: translateY(-2px);
 }
-
-.time-btn {
-    padding: 5px 15px;
-}
-
-.selected-time {
-    background-color: #a3907a;
-    color: white;
-}
-
-.time-radio {
-    display: none;
-}
-
-.time-radio:checked + .time-btn {
-    background-color: #a3907a;
-    color: white;
-}
-
-.fully-booked {
-    background-color: rgb(255, 0, 0) !important;
-    font-weight: bold;
-}
-
-.day-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: 80px;
-    position: relative;
-}
-
-.swal2-popup {
-    font-size: 1.1rem !important;
-    border-radius: 16px !important;
-    padding: 20px !important;
-    background: #f9f9f9 !important;
-}
-
-.swal2-confirm {
-    background-color: var(--negative-color) !important;
-    color: white !important;
-    font-weight: bold;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-}
-
-.swal2-cancel {
-    background-color: #aaa !important;
-    color: white !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-}
-
-.swal2-mobile {
-    font-size: 16px !important;
-    width: 90% !important;
-    max-width: 350px !important;
-}
-
-#dates {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 10px 0;
-}
-
