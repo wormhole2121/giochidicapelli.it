@@ -8,7 +8,6 @@
     font-family: 'Fjalla One', sans-serif;
 } 
 
-
 #navbar .nav-link:hover,
 #navbar .nav-link:active,
 #navbar .nav-link:focus {
@@ -35,11 +34,121 @@
 }
 
 .custom-title-2 {
-    
     color: white;
     margin-left: 40px;
     font-family: 'Fjalla One', sans-serif;
     font-size: 30px;
 }
 
+/* ==============================
+   SOLO OFFCANVAS (MOBILE)
+   ============================== */
+@media (max-width: 900px) {
 
+  #offcanvasNavbar.offcanvas{
+    background: #ffffff;
+  }
+
+  #offcanvasNavbar .offcanvas-header{
+    padding: 18px 18px 12px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+  }
+
+  #offcanvasNavbar .offcanvas-body{
+    padding: 14px 16px 18px;
+    background: radial-gradient(circle at top, rgba(0,0,0,.03), transparent 55%);
+  }
+
+  #offcanvasNavbar .user-avatar-modern {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #111, #555);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(0,0,0,.15);
+  }
+
+  #offcanvasNavbar .user-initial {
+    color: #fff;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  #offcanvasNavbar .user-welcome-text{
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 20px;
+    color: #111;
+  }
+
+  #offcanvasNavbar .offcanvas-menu{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+  }
+
+  #offcanvasNavbar .off-item{
+    font-size: 20px !important;
+    color: #111 !important;
+    font-family: 'Fjalla One', sans-serif !important;
+    padding: 12px 12px !important;
+    border-radius: 16px;
+    background: rgba(0,0,0,.035);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform .08s ease, background .15s ease;
+  }
+
+  #offcanvasNavbar .off-item:hover{
+    background: rgba(0,0,0,.06);
+    transform: translateY(-1px);
+  }
+
+  #offcanvasNavbar .off-ico{
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.06);
+    color: #111;
+  }
+
+  #offcanvasNavbar .off-text{
+    flex: 1;
+  }
+
+  #offcanvasNavbar .off-arrow{
+    opacity: .55;
+  }
+
+  #offcanvasNavbar .off-divider{
+    height: 1px;
+    background: rgba(0,0,0,.08);
+    border-radius: 999px;
+    margin: 6px 0;
+  }
+
+  #offcanvasNavbar .off-logout{
+    width: 100%;
+    border: 0;
+    padding: 12px 12px;
+    border-radius: 16px;
+    background: rgba(220, 38, 38, .10);
+    color: #b91c1c;
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #offcanvasNavbar .off-logout:hover{
+    background: rgba(220, 38, 38, .14);
+  }
+}
