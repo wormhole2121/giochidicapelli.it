@@ -421,10 +421,13 @@
 .booking-card--compact,
 .booking-card--compact .ui-card,
 .booking-card--compact .booking-card {
-  background: rgba(205, 198, 198, 0.88) !important;
+  /* background: rgba(255, 254, 254, 0.30); */
+  /* background: rgb(208 203 203 / 55%); */
+  background: rgb(235 235 235 / 55%);
   border: 1px solid rgba(0,0,0,0.10) !important;
-  box-shadow: 0 12px 30px rgba(0,0,0,.15) !important;
+  box-shadow: 0 12px 30px rgba(123, 115, 115, 0.15) !important;
   color: #111 !important;
+  backdrop-filter: blur(10px);
 }
 
 /* Header */
@@ -435,31 +438,31 @@
 
 /* Pill orario */
 .booking-card__time{
-  background: rgba(0,0,0,0.08) !important;
+  background: rgba(65, 63, 63, 0.779) !important;
   border: 1px solid rgba(0,0,0,0.12) !important;
-  color: #111 !important;
+  color: #fffefe !important;
 }
 
 /* Box interni */
 .booking-row--compact{
-  background: rgba(0,0,0,0.05) !important;
+  background: rgba(11, 11, 11, 0.080) !important;
   border: 1px solid rgba(0,0,0,0.08) !important;
 }
 
 /* Testi */
 .booking-row--compact .booking-label{
-  color: #555 !important;
+  color: #ffffff !important;
 }
 
 .booking-row--compact .booking-value{
-  color: #111 !important;
+  color: #000000 !important;
 }
 
 /* Bottoni */
 .booking-details-btn{
-  background: rgba(0,0,0,0.08) !important;
+  background: rgba(65, 63, 63, 0.779) !important;
   border: 1px solid rgba(0,0,0,0.12) !important;
-  color: #111 !important;
+  color: #ffffff !important;
 }
 
 .booking-details-btn:hover{
@@ -468,5 +471,177 @@
 
 .delete-booking-btn--full{
   background-color: #E74C3C !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  font-weight: 800;
+  font-size: 17px;
   color: #ffffff !important;
+}
+
+/* =========================================================
+   LE MIE PRENOTAZIONI - LOOK IDENTICO ALLA FOTO (DARK GLASS)
+   Incolla QUESTO BLOCCO IN FONDO al CSS
+   ========================================================= */
+
+.my-bookings{
+  padding: 14px 0 34px;
+}
+
+/* HEADER: pill scura vetro + gradient leggero (come foto) */
+.my-bookings .page-head-premium{
+  max-width: 980px;
+  margin: 10px auto 14px;
+  padding: 14px 14px;
+  border-radius: 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.07), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(0,0,0,.35), transparent 60%),
+    linear-gradient(180deg, rgba(21,21,21,.86) 0%, rgba(60,60,60,.50) 100%);
+  
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+}
+
+/* titolo centrato e bianco */
+.my-bookings .page-head-text-premium{
+  text-align: center;
+  transform: translateX(-30px);
+}
+.my-bookings .page-title-premium{
+  margin: 0;
+  color: #fff !important;
+}
+
+/* back button come foto */
+.my-bookings .back-link-premium{
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff !important;
+
+  box-shadow: 0 10px 22px rgba(0,0,0,.25);
+}
+.my-bookings .back-link-premium:hover{
+  background: rgba(255,255,255,.14) !important;
+}
+
+/* DATA: pill identica (dark glass) */
+.my-bookings .date-premium{
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 12px;
+}
+
+.my-bookings .date-pill{
+  width: 100%;
+  max-width: 520px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  border-radius: 18px;
+
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.06), transparent 55%),
+    linear-gradient(180deg, rgba(21,21,21,.86) 0%, rgba(60,60,60,.50) 100%) !important;
+
+  border: 1px solid rgba(255,255,255,.12) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+
+  color: #fff !important;
+}
+
+.my-bookings .date-pill-ico{
+  width: 38px;
+  height: 38px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff !important;
+}
+
+.my-bookings .date-pill-text{
+  color: #fff !important;
+  font-size: 25px;
+}
+
+/* CARD PRENOTAZIONE: stesso dark glass della foto */
+.my-bookings .booking-item-premium{
+border-radius: 22px !important;
+    overflow: hidden;
+    background: radial-gradient(rgb(255 255 255 / 35%), transparent 0%), linear-gradient(180deg, rgb(85 84 84 / 72%) 0%, rgb(87 87 87 / 45%) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, .12) !important;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .35);
+    backdrop-filter: blur(12px);
+    color: #fff !important;
+}
+
+/* fascia alta della card */
+.my-bookings .booking-top-premium{
+  background: rgba(0,0,0,.22) !important;
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+
+/* pill orario */
+.my-bookings .time-pill-premium{
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff !important;
+}
+
+/* righe info */
+.my-bookings .line-ico{
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff !important;
+}
+.my-bookings .line-label{
+  color: rgba(255,255,255,.65) !important;
+}
+.my-bookings .line-value{
+  color: #fff !important;
+}
+
+/* sezione elimina */
+.my-bookings .delete-form-premium{
+  background: rgba(0,0,0,.20) !important;
+  border-top: 1px solid rgba(255,255,255,.10) !important;
+}
+
+/* bottone elimina come foto */
+.my-bookings .btn-delete-premium{
+  background-color: #E74C3C !important;
+  color: #fff !important;
+  border: 0;
+}
+.my-bookings .btn-delete-premium:hover{
+  background-color: #C0392B !important;
+}
+
+/* Mobile */
+@media (max-width: 576px){
+  .my-bookings .page-head-premium{
+    border-radius: 18px;
+    padding: 12px;
+  }
+  .my-bookings .page-title-premium{ font-size: 24px; }
 }
