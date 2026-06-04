@@ -2,23 +2,41 @@ let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let selectedDate = null;
 
-// *** AGGIUNTA ECCEZIONI ***
-const specialDates = ["2025-12-22", "2025-12-28", "2025-12-29"]; 
+function getSelectedDateFromUrl() {
+    const currentParams = new URLSearchParams(window.location.search);
+    return currentParams.get("date");
+}
 
 const params = new URLSearchParams(window.location.search);
-if (params.has('date')) {
-    selectedDate = new Date(params.get('date'));
+
+if (params.has("date")) {
+    selectedDate = new Date(params.get("date"));
     currentMonth = selectedDate.getMonth();
     currentYear = selectedDate.getFullYear();
 }
 
 function updateCurrentMonth() {
-    const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-    document.getElementById("currentMonth").textContent = monthNames[currentMonth] + ' ' + currentYear;
+    const monthNames = [
+        "Gennaio",
+        "Febbraio",
+        "Marzo",
+        "Aprile",
+        "Maggio",
+        "Giugno",
+        "Luglio",
+        "Agosto",
+        "Settembre",
+        "Ottobre",
+        "Novembre",
+        "Dicembre"
+    ];
+
+    document.getElementById("currentMonth").textContent = monthNames[currentMonth] + " " + currentYear;
 }
 
 function changeMonth(delta) {
     currentMonth += delta;
+
     if (currentMonth > 11) {
         currentMonth = 0;
         currentYear++;
@@ -26,6 +44,7 @@ function changeMonth(delta) {
         currentMonth = 11;
         currentYear--;
     }
+
     updateCurrentMonth();
     generateDays();
 }
@@ -43,19 +62,83 @@ window.addEventListener("DOMContentLoaded", () => {
     generateDays();
 });
 
+function getDefaultScheduleLabel(dayOfWeek) {
+    if (dayOfWeek === 0 || dayOfWeek === 1) {
+        return "Chiuso";
+    }
+
+    if (dayOfWeek === 4) {
+        return "Orario giovedì 14:00-20:30";
+    }
+
+    return "Orario normale del giorno";
+}
+
+function getInputOptions(dayOfWeek) {
+    const inputOptions = {
+        closed: "Chiuso",
+        normal: "Orario esteso 08:30-11:30 / 14:00-20:30"
+    };
+
+    if (dayOfWeek === 0 || dayOfWeek === 1 || dayOfWeek === 4) {
+        inputOptions.thursday = "Orario giovedì 14:00-20:30";
+    }
+
+    return inputOptions;
+}
+
+function getCurrentInputValue(isUnavailable, scheduleOverride, dayOfWeek) {
+    if (isUnavailable) {
+        return "closed";
+    }
+
+    if (scheduleOverride === "normal") {
+        return "normal";
+    }
+
+    if (scheduleOverride === "thursday") {
+        return "thursday";
+    }
+
+    if (dayOfWeek === 4) {
+        return "thursday";
+    }
+
+    if (dayOfWeek === 0 || dayOfWeek === 1) {
+        return "closed";
+    }
+
+    return "normal";
+}
+
+function getActionToSend(selectedAction, dayOfWeek) {
+    const isThursday = dayOfWeek === 4;
+
+    if (isThursday && selectedAction === "thursday") {
+        return "default";
+    }
+
+    return selectedAction;
+}
+
+function reloadPageOnDate(formattedDate) {
+    window.location.href = `${window.location.pathname}?date=${formattedDate}`;
+}
+
 function generateDays() {
     const datesContainer = document.getElementById("dates");
-    datesContainer.innerHTML = '';
+    datesContainer.innerHTML = "";
 
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
 
-    const currentDate = new Date();
     const unavailableDates = window.unavailableDates || [];
+    const scheduleOverrides = window.scheduleOverrides || {};
     const fullyBookedDates = window.fullyBookedDates || [];
     const isAdmin = !!window.isAdmin;
 
-    let startingDay = firstDayOfMonth.getDay();
+    const startingDay = firstDayOfMonth.getDay();
+
     for (let i = 0; i < startingDay; i++) {
         const emptyDateElement = document.createElement("div");
         emptyDateElement.classList.add("date", "out-of-month");
@@ -64,29 +147,31 @@ function generateDays() {
 
     for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
         const date = new Date(currentYear, currentMonth, i);
-        const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, "0")}-${i.toString().padStart(2, "0")}`;
+
         const wrapper = document.createElement("div");
         wrapper.classList.add("day-wrapper");
         wrapper.style.position = "relative";
         wrapper.dataset.date = formattedDate;
 
         const dayOfWeek = date.getDay();
-        
-        // *** NUOVA LOGICA ECCEZIONI ***
-        const isSundayOrMonday = (dayOfWeek === 0 || dayOfWeek === 1) && !specialDates.includes(formattedDate);
-        const isUnavailable = unavailableDates.includes(formattedDate) && !specialDates.includes(formattedDate);
-
+        const isSundayOrMonday = dayOfWeek === 0 || dayOfWeek === 1;
+        const isUnavailable = unavailableDates.includes(formattedDate);
+        const hasScheduleOverride = Object.prototype.hasOwnProperty.call(scheduleOverrides, formattedDate);
+        const scheduleOverride = hasScheduleOverride ? scheduleOverrides[formattedDate] : null;
         const isPastDate = date < new Date().setHours(0, 0, 0, 0);
 
         const dateElement = document.createElement("div");
         dateElement.classList.add("date");
-        dateElement.setAttribute('data-date', formattedDate);
+        dateElement.setAttribute("data-date", formattedDate);
 
         const spanElement = document.createElement("span");
         spanElement.textContent = i;
         dateElement.appendChild(spanElement);
 
-        if (isPastDate || isUnavailable || isSundayOrMonday) {
+        const isBlockedForUsers = isPastDate || isUnavailable || (isSundayOrMonday && !hasScheduleOverride);
+
+        if (isBlockedForUsers) {
             dateElement.classList.add("non-selectable");
             dateElement.style.pointerEvents = "none";
             dateElement.style.cursor = "default";
@@ -94,15 +179,30 @@ function generateDays() {
             if (fullyBookedDates.includes(formattedDate)) {
                 dateElement.classList.add("fully-booked");
             }
+
             dateElement.addEventListener("click", () => {
                 window.location.search = `?date=${formattedDate}`;
             });
         }
 
+        if (hasScheduleOverride) {
+            dateElement.classList.add("special-schedule");
+        }
+
         if (isAdmin && !isPastDate) {
             const icon = document.createElement("span");
             icon.className = "lock-icon";
-            icon.innerText = unavailableDates.includes(formattedDate) ? "🔒" : "🔓";
+
+            if (isUnavailable || (isSundayOrMonday && !hasScheduleOverride)) {
+                icon.innerText = "🔒";
+            } else if (scheduleOverride === "normal") {
+                icon.innerText = "🕑";
+            } else if (scheduleOverride === "thursday" || dayOfWeek === 4) {
+                icon.innerText = "🕔";
+            } else {
+                icon.innerText = "🔓";
+            }
+
             icon.style.position = "absolute";
             icon.style.top = "-30px";
             icon.style.left = "50%";
@@ -114,22 +214,28 @@ function generateDays() {
             icon.addEventListener("click", async e => {
                 e.stopPropagation();
 
-                const isCurrentlyBlocked = unavailableDates.includes(formattedDate);
+                const defaultLabel = getDefaultScheduleLabel(dayOfWeek);
+                const inputOptions = getInputOptions(dayOfWeek);
+                const inputValue = getCurrentInputValue(isUnavailable, scheduleOverride, dayOfWeek);
 
-                if (!isCurrentlyBlocked && !specialDates.includes(formattedDate)) {
-                    const result = await Swal.fire({
-                        title: 'Bloccare il giorno?',
-                        text: `Sei sicuro di voler bloccare il giorno ${formattedDate}? Gli utenti non potranno più prenotare.`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#E74C3C',
-                        cancelButtonColor: '#aaa',
-                        confirmButtonText: 'Sì, blocca',
-                        cancelButtonText: 'Annulla'
-                    });
+                const result = await Swal.fire({
+                    title: `Gestisci ${formattedDate}`,
+                    text: `Orario predefinito: ${defaultLabel}`,
+                    input: "select",
+                    inputOptions: inputOptions,
+                    inputValue: inputValue,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#E74C3C",
+                    cancelButtonColor: "#aaa",
+                    confirmButtonText: "Salva",
+                    cancelButtonText: "Annulla"
+                });
 
-                    if (!result.isConfirmed) return;
-                }
+                if (!result.isConfirmed) return;
+
+                const selectedAction = result.value;
+                const actionToSend = getActionToSend(selectedAction, dayOfWeek);
 
                 try {
                     const response = await fetch("/admin/toggle-date", {
@@ -138,37 +244,78 @@ function generateDays() {
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
                         },
-                        body: JSON.stringify({ date: formattedDate })
+                        body: JSON.stringify({
+                            date: formattedDate,
+                            action: actionToSend
+                        })
                     });
 
                     const json = await response.json();
 
-                    if (json.status === "blocked") {
-                        if (!unavailableDates.includes(formattedDate)) unavailableDates.push(formattedDate);
+                    if (!response.ok) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Bloccato!',
-                            timer: 1500,
-                            showConfirmButton: false
+                            icon: "error",
+                            title: "Errore",
+                            text: json.error || "Operazione non riuscita."
                         });
-                    } else if (json.status === "unblocked") {
-                        const idx = unavailableDates.indexOf(formattedDate);
-                        if (idx > -1) unavailableDates.splice(idx, 1);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Sbloccato!',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
+
+                        return;
                     }
+
+                    const unavailableIndex = unavailableDates.indexOf(formattedDate);
+
+                    if (json.status === "closed") {
+                        if (unavailableIndex === -1) {
+                            unavailableDates.push(formattedDate);
+                        }
+
+                        delete scheduleOverrides[formattedDate];
+                    }
+
+                    if (json.status === "special") {
+                        if (unavailableIndex > -1) {
+                            unavailableDates.splice(unavailableIndex, 1);
+                        }
+
+                        scheduleOverrides[formattedDate] = json.schedule_type;
+                    }
+
+                    if (json.status === "default") {
+                        if (unavailableIndex > -1) {
+                            unavailableDates.splice(unavailableIndex, 1);
+                        }
+
+                        delete scheduleOverrides[formattedDate];
+                    }
+
+                    const currentSelectedDate = getSelectedDateFromUrl();
+
+                    if (currentSelectedDate === formattedDate) {
+                        await Swal.fire({
+                            icon: "success",
+                            title: "Orari aggiornati!",
+                            timer: 600,
+                            showConfirmButton: false
+                        });
+
+                        reloadPageOnDate(formattedDate);
+                        return;
+                    }
+
+                    await Swal.fire({
+                        icon: "success",
+                        title: "Salvato!",
+                        timer: 600,
+                        showConfirmButton: false
+                    });
 
                     generateDays();
 
                 } catch (error) {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Errore di rete',
-                        text: 'Impossibile comunicare col server.'
+                        icon: "error",
+                        title: "Errore di rete",
+                        text: "Impossibile comunicare col server."
                     });
                 }
             });
@@ -176,8 +323,8 @@ function generateDays() {
             wrapper.appendChild(icon);
         }
 
-        if (selectedDate && formattedDate === selectedDate.toISOString().split('T')[0]) {
-            dateElement.classList.add('active');
+        if (getSelectedDateFromUrl() && formattedDate === getSelectedDateFromUrl()) {
+            dateElement.classList.add("active");
         }
 
         wrapper.appendChild(dateElement);
@@ -187,30 +334,6 @@ function generateDays() {
 
 $(document).ready(function () {
     $("#haircut_types").select2({
-        width: 'resolve'
+        width: "resolve"
     });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    let timeButtons = document.querySelectorAll('.time-btn');
-    let selectedTimeInput = document.getElementById('selectedTime');
-
-    timeButtons.forEach((btn) => {
-        btn.addEventListener('click', function () {
-            timeButtons.forEach((innerBtn) => {
-                innerBtn.classList.remove('btn-primary');
-                innerBtn.classList.add('btn-outline-primary');
-            });
-            btn.classList.remove('btn-outline-primary');
-            btn.classList.add('btn-primary');
-            selectedTimeInput.value = btn.getAttribute('data-time');
-        });
-    });
-
-    if (selectedTimeInput.value) {
-        let selectedButton = document.querySelector(`.time-btn[data-time="${selectedTimeInput.value}"]`);
-        if (selectedButton) {
-            selectedButton.click();
-        }
-    }
 });

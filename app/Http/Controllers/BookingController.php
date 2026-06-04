@@ -7,34 +7,109 @@ use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Booking;
+use App\Models\UnavailableDate;
+use App\Models\AvailableDate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\UnavailableDate;
 
 class BookingController extends Controller
 {
+    private function extendedWorkSlots(): array
+    {
+        $morning = range(510, 690, 30);
+        $afternoon = range(840, 1230, 30);
+
+        return array_merge($morning, $afternoon);
+    }
+
+    private function normalTuesdayWednesdaySlots(): array
+    {
+        $morning = range(510, 690, 30);
+        $afternoon = range(840, 1140, 30);
+
+        return array_merge($morning, $afternoon);
+    }
+
+    private function thursdayWorkSlots(): array
+    {
+        return range(840, 1230, 30);
+    }
+
+    private function fridayWorkSlots(): array
+    {
+        $morning = range(480, 690, 30);
+        $afternoon = range(840, 1140, 30);
+
+        return array_merge($morning, $afternoon);
+    }
+
+    private function saturdayWorkSlots(): array
+    {
+        $morning = range(480, 690, 30);
+        $afternoon = range(840, 1110, 30);
+
+        return array_merge($morning, $afternoon);
+    }
+
+    private function getTimeslotsForDate(string $date): array
+    {
+        $carbonDate = Carbon::parse($date);
+        $formattedDate = $carbonDate->format('Y-m-d');
+        $dayOfWeek = $carbonDate->dayOfWeek;
+
+        if (UnavailableDate::where('date', $formattedDate)->exists()) {
+            return [];
+        }
+
+        $specialDate = AvailableDate::where('date', $formattedDate)->first();
+
+        if ($specialDate) {
+            if ($specialDate->schedule_type === 'normal') {
+                return $this->extendedWorkSlots();
+            }
+
+            if ($specialDate->schedule_type === 'thursday') {
+                return $this->thursdayWorkSlots();
+            }
+        }
+
+        if (in_array($dayOfWeek, [0, 1])) {
+            return [];
+        }
+
+        if (in_array($dayOfWeek, [2, 3])) {
+            return $this->normalTuesdayWednesdaySlots();
+        }
+
+        if ($dayOfWeek == 4) {
+            return $this->thursdayWorkSlots();
+        }
+
+        if ($dayOfWeek == 5) {
+            return $this->fridayWorkSlots();
+        }
+
+        if ($dayOfWeek == 6) {
+            return $this->saturdayWorkSlots();
+        }
+
+        return [];
+    }
+
     public function index(Request $request)
     {
         Carbon::setLocale('it');
 
         $selectedDate = $request->input('date');
 
-        // *** MODIFICATO ***
-        $currentYear = now()->year;
-        $alwaysSelectableDates = [];
-
-        if ($currentYear == 2025) {
-            $alwaysSelectableDates = [
-                '2025-12-22',
-                '2025-12-28',
-                '2025-12-29'
-            ];
-        }
-
         if (Auth::check() && Auth::user()->is_admin) {
-            $bookings = Booking::where('date', $selectedDate)->orderBy('start_time', 'asc')->get();
+            $bookings = Booking::where('date', $selectedDate)
+                ->orderBy('start_time', 'asc')
+                ->get();
         } else {
-            $bookings = Booking::where('user_id', Auth::id())->where('date', $selectedDate)->get();
+            $bookings = Booking::where('user_id', Auth::id())
+                ->where('date', $selectedDate)
+                ->get();
         }
 
         $bookedHours = Booking::where('date', $selectedDate)
@@ -43,47 +118,37 @@ class BookingController extends Controller
                 return Carbon::parse($time)->format('H:i');
             });
 
-        $bookedDates = Booking::where('date', '>=', now())
-            ->where('end_time', '>=', now())
-            ->pluck('date')
-            ->unique();
-
         $fullyBookedDates = collect();
 
         $startDate = Carbon::now()->startOfMonth();
         $endDate = Carbon::now()->addMonths(6)->endOfMonth();
+
         $availableDates = [];
+
+        $dbBlocked = UnavailableDate::pluck('date')
+            ->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))
+            ->toArray();
+
+        $scheduleOverrides = AvailableDate::all()
+            ->mapWithKeys(function ($item) {
+                return [
+                    Carbon::parse($item->date)->format('Y-m-d') => $item->schedule_type,
+                ];
+            })
+            ->toArray();
 
         while ($startDate <= $endDate) {
             $date = $startDate->format('Y-m-d');
-            $dayOfWeek = $startDate->dayOfWeek;
-            $timeslots = [];
+            $timeslots = $this->getTimeslotsForDate($date);
 
-            // *** LOGICA SLOT MODIFICATA PER RISPETTARE ALWAYS SELECTABLE ***
-            if (in_array($date, $alwaysSelectableDates) || in_array($dayOfWeek, [2, 3])) {
-                $morning = range(510, 690, 30);
-                $afternoon = range(840, 1140, 30);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 4) {
-                $timeslots = range(840, 1230, 30);
-            } elseif ($dayOfWeek == 5) {
-                $morning = range(480, 690, 30);
-                $afternoon = range(840, 1140, 30);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($dayOfWeek == 6) {
-                $morning = range(480, 690, 30);
-                $afternoon = range(840, 1110, 30);
-                $timeslots = array_merge($morning, $afternoon);
+            if (count($timeslots) > 0) {
+                $availableDates[] = $date;
             }
 
             $bookedSlotsCount = Booking::where('date', $date)->count();
 
-            if ($bookedSlotsCount >= count($timeslots)) {
+            if (count($timeslots) > 0 && $bookedSlotsCount >= count($timeslots)) {
                 $fullyBookedDates->push($date);
-            }
-
-            if (!$bookedDates->contains($date)) {
-                $availableDates[] = $date;
             }
 
             $startDate->addDay();
@@ -93,27 +158,12 @@ class BookingController extends Controller
 
         if ($selectedDate) {
             $formattedDate = Carbon::parse($selectedDate)->format('Y-m-d');
-            $selectedDayOfWeek = Carbon::parse($selectedDate)->dayOfWeek;
+            $timeslots = $this->getTimeslotsForDate($formattedDate);
 
-            if (in_array($formattedDate, $alwaysSelectableDates) || in_array($selectedDayOfWeek, [2, 3])) {
-                $morning = range(510, 690, 30);
-                $afternoon = range(840, 1140, 30);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 4) {
-                $timeslots = range(840, 1230, 30);
-            } elseif ($selectedDayOfWeek == 5) {
-                $morning = range(480, 690, 30);
-                $afternoon = range(840, 1140, 30);
-                $timeslots = array_merge($morning, $afternoon);
-            } elseif ($selectedDayOfWeek == 6) {
-                $morning = range(480, 690, 30);
-                $afternoon = range(840, 1110, 30);
-                $timeslots = array_merge($morning, $afternoon);
-            }
-
-            $availableTimes = collect($timeslots)->map(function ($minutes) use ($bookedHours) {
+            $availableTimes = collect($timeslots)->map(function ($minutes) {
                 $hours = floor($minutes / 60);
                 $mins = $minutes % 60;
+
                 return sprintf('%02d:%02d', $hours, $mins);
             })->reject(function ($time) use ($bookedHours) {
                 return in_array($time, $bookedHours->toArray());
@@ -121,27 +171,30 @@ class BookingController extends Controller
         }
 
         $userBookings = [];
+
         if (Auth::check()) {
             $userBookings = Booking::where('user_id', Auth::id())
                 ->where('date', $selectedDate)
                 ->get();
         }
 
-        $isDateBooked = in_array($selectedDate, $bookedDates->toArray());
         $isFullyBooked = in_array($selectedDate, $fullyBookedDates->toArray());
 
-        $dbBlocked = \App\Models\UnavailableDate::pluck('date')->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))->toArray();
         $today = now()->startOfDay();
+        $closedSundayMonday = [];
 
-        $sundayMonday = [];
         for ($i = 0; $i < 180; $i++) {
             $d = $today->copy()->addDays($i);
-            if (in_array($d->dayOfWeek, [0,1])) {
-                $sundayMonday[] = $d->format('Y-m-d');
+            $formatted = $d->format('Y-m-d');
+
+            if (in_array($d->dayOfWeek, [0, 1]) && !array_key_exists($formatted, $scheduleOverrides)) {
+                $closedSundayMonday[] = $formatted;
             }
         }
 
-        $unavailableDates = array_unique(array_merge($dbBlocked, $sundayMonday));
+        $unavailableDates = array_values(array_unique(array_merge($dbBlocked, $closedSundayMonday)));
+
+        $isDateBooked = false;
 
         return view('calendario', compact(
             'selectedDate',
@@ -152,10 +205,10 @@ class BookingController extends Controller
             'availableTimes',
             'fullyBookedDates',
             'isFullyBooked',
-            'unavailableDates'
+            'unavailableDates',
+            'scheduleOverrides'
         ));
     }
-
 
     public function prenota(Request $request)
     {
@@ -168,21 +221,28 @@ class BookingController extends Controller
             'haircut_types.*' => 'in:Taglio,Taglio con modellatura barba,Taglio Razor fade(Sfumatura),Taglio Children,Modellatura barba',
         ]);
 
-        // *** MODIFICATO ANCHE QUI PER COERENZA ***
-        $currentYear = now()->year;
-        $alwaysSelectableDates = [];
+        $date = Carbon::parse($validatedData['date'])->format('Y-m-d');
 
-        if ($currentYear == 2025) {
-            $alwaysSelectableDates = [
-                '2025-12-22',
-                '2025-12-28',
-                '2025-12-29'
-            ];
+        $timeslots = $this->getTimeslotsForDate($date);
+
+        if (count($timeslots) === 0) {
+            return redirect()->route('calendario')->with('error', 'Questa data non è prenotabile.');
+        }
+
+        $validTimes = collect($timeslots)->map(function ($minutes) {
+            $hours = floor($minutes / 60);
+            $mins = $minutes % 60;
+
+            return sprintf('%02d:%02d', $hours, $mins);
+        })->toArray();
+
+        if (!in_array($validatedData['start_time'], $validTimes)) {
+            return redirect()->route('calendario')->with('error', 'Orario non valido per questa data.');
         }
 
         if (!Auth::user()->is_admin) {
             $existingBooking = Booking::where('user_id', Auth::id())
-                ->where('date', $validatedData['date'])
+                ->where('date', $date)
                 ->first();
 
             if ($existingBooking) {
@@ -190,14 +250,15 @@ class BookingController extends Controller
             }
         }
 
-        $startTime = Carbon::createFromFormat('Y-m-d H:i', $validatedData['date'] . ' ' . $validatedData['start_time']);
+        $startTime = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $validatedData['start_time']);
         $endTime = $startTime->copy()->addMinutes(30);
 
-        $overlappingBooking = Booking::where('date', $validatedData['date'])
+        $overlappingBooking = Booking::where('date', $date)
             ->where(function ($query) use ($startTime, $endTime) {
-                $query->whereBetween('start_time', [$startTime, $endTime->subSecond()])
-                    ->orWhereBetween('end_time', [$startTime->addSecond(), $endTime]);
-            })->first();
+                $query->whereBetween('start_time', [$startTime, $endTime->copy()->subSecond()])
+                    ->orWhereBetween('end_time', [$startTime->copy()->addSecond(), $endTime]);
+            })
+            ->first();
 
         if ($overlappingBooking) {
             return redirect()->route('calendario')->with('error', 'L\'orario selezionato è già prenotato.');
@@ -207,7 +268,7 @@ class BookingController extends Controller
             'user_id' => Auth::id(),
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'date' => $validatedData['date'],
+            'date' => $date,
             'phone' => $validatedData['phone'],
             'name' => $validatedData['name'],
             'is_visible' => true,
@@ -217,18 +278,20 @@ class BookingController extends Controller
 
         if ($booking->save()) {
             $reminderTime = $startTime->copy()->subHours(4);
+
             SendAppointmentReminder::dispatch($booking->id)->delay($reminderTime);
             Mail::to(Auth::user()->email)->queue(new BookingConfirmationMail($booking->id));
+
             return redirect()->route('calendario')->with('success', 'Prenotazione effettuata con successo!');
         }
 
         return redirect()->route('calendario')->with('error', 'Errore durante il salvataggio della prenotazione.');
     }
 
-
     public function leMiePrenotazioni()
     {
         Carbon::setLocale('it');
+
         $userBookings = Booking::where('user_id', Auth::id())
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
@@ -237,27 +300,22 @@ class BookingController extends Controller
         return view('le-mie-prenotazioni', compact('userBookings'));
     }
 
-
     public function elimina($id)
     {
         $booking = Booking::find($id);
+
         if (!$booking) {
             return redirect()->route('le-mie-prenotazioni')->with('error', 'Appuntamento non trovato.');
         }
 
-        if (Auth::check() && $booking->user_id == Auth::id()) {
+        if (Auth::check() && ($booking->user_id == Auth::id() || Auth::user()->is_admin)) {
             $booking->delete();
-            return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
-        }
 
-        if (Auth::check() && (Auth::user()->is_admin || $booking->user_id == Auth::id())) {
-            $booking->delete();
-            return redirect()->route('le-mie-prenotazioni')->with('success', 'Appuntamento eliminato con successo.');
+            return redirect()->route('le-mie-prenotazioni')->with('delete_success', 'Appuntamento eliminato con successo.');
         }
 
         return redirect()->route('le-mie-prenotazioni')->with('error', 'Non hai l\'autorizzazione per eliminare questo appuntamento.');
     }
-
 
     public function toggleDate(Request $request)
     {
@@ -265,19 +323,52 @@ class BookingController extends Controller
             return response()->json(['error' => 'Non autorizzato'], 403);
         }
 
-        $date = Carbon::parse($request->date);
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'action' => 'required|in:default,closed,normal,thursday',
+        ]);
 
-        if (in_array($date->dayOfWeek, [0,1])) {
-            return response()->json(['error' => 'Impossibile modificare Domenica/Lunedì'], 400);
+        $date = Carbon::parse($validatedData['date'])->format('Y-m-d');
+        $action = $validatedData['action'];
+
+        if ($action === 'closed') {
+            AvailableDate::where('date', $date)->delete();
+
+            UnavailableDate::updateOrCreate([
+                'date' => $date,
+            ]);
+
+            return response()->json([
+                'status' => 'closed',
+                'date' => $date,
+            ]);
         }
 
-        $exists = UnavailableDate::where('date', $date->format('Y-m-d'))->first();
-        if ($exists) {
-            $exists->delete();
-            return response()->json(['status' => 'unblocked']);
+        if ($action === 'normal' || $action === 'thursday') {
+            UnavailableDate::where('date', $date)->delete();
+
+            AvailableDate::updateOrCreate(
+                ['date' => $date],
+                ['schedule_type' => $action]
+            );
+
+            return response()->json([
+                'status' => 'special',
+                'date' => $date,
+                'schedule_type' => $action,
+            ]);
         }
 
-        UnavailableDate::create(['date' => $date->format('Y-m-d')]);
-        return response()->json(['status' => 'blocked']);
+        if ($action === 'default') {
+            UnavailableDate::where('date', $date)->delete();
+            AvailableDate::where('date', $date)->delete();
+
+            return response()->json([
+                'status' => 'default',
+                'date' => $date,
+            ]);
+        }
+
+        return response()->json(['error' => 'Azione non valida'], 400);
     }
 }
